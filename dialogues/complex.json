@@ -1,0 +1,39 @@
+{
+  "first": {
+    "type": "text",
+    "content": "Hi.| Take a seat. Eat some cake. Drink some juice.",
+    "next": "0"
+  },
+  "repeat": {
+    "type": "text",
+    "content": "You again?| Drink some water| if you want.",
+    "next": "0"
+  },
+  "0": {
+    "type": "divert",
+    "condition": "variable",
+    "variable": "var1",
+    "true": "1",
+    "false": "2"
+  },
+  "1": {
+    "type": "question",
+    "text": "The variable 'var1' is returning true.| Now the question:|| What do you prefer?",
+    "options": ["Oranges", "Apples"],
+    "next": ["3", "4"]
+  },
+  "2": {
+    "type": "text",
+    "content":"The variable 'var1' is returning false. I have NOTHING to talk."
+  },
+  "3": {
+    "type": "action",
+    "text": "Nice.",
+    "value": ["variable", ["oranges","apples"], [true, false]]
+  },
+  "4": {
+    "type": "action",
+    "text": "Very Nice.",
+    "value": ["variable", ["apples","oranges"], [true, false]]
+  }
+}

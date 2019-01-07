@@ -1,0 +1,33 @@
+{
+  "first": {
+    "type": "text",
+    "content": "Hello.| This dialogue has a question. Use the 'up' and 'down' arrow keys to select a choice and then press Continue.",
+    "next": "0"
+  },
+  "repeat": {
+    "type": "text",
+    "content": "Hey.| Hope you payed attention on the first time.| I'm not going to repeat.",
+    "next": "0"
+  },
+  "0": {
+    "type": "question",
+    "text": "What is your favorite option?| Stop looking at me!| This is not a silly question|| ...I guess.",
+    "options": ["Option 1", "Option 2", "Option 3"],
+    "next": ["1", "2", "3"]
+  },
+  "1": {
+    "type": "action",
+    "text": "Option 1 is a nice option.",
+    "value": ["variable", "question", ["1"]]
+  },
+  "2": {
+    "type": "action",
+    "text": "This 'two' is my favorite option.",
+    "value": ["variable", "question", ["2"]]
+  },
+  "3": {
+    "type": "action",
+    "text": "Too bored to write a third sentence.",
+    "value": ["variable", "question", ["3"]]
+  }
+}
