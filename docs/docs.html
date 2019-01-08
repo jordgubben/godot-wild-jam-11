@@ -1,0 +1,160 @@
+<html>
+	<head>
+        <title>Godot Open Dialogue - DOCS</title>
+        <meta author="J. Sena" version="1.0">
+		<link rel="stylesheet" href="style.css">
+	</head>
+
+	<body>				
+		
+        <h1>Godot Open Dialogue</h1>
+        <h2>About</h2>
+        <span>The Godot Open Dialogue is a non-linear conversation system created by <a href="https://twitter.com/jsena42" target="_blank">J. Sena</a> and released as <accent>CC-BY</accent>.
+        This system was created using the <accent><a href="https://godotengine.org/article/dev-snapshot-godot-3-1-alpha-5" target="_blank">3.1 alpha 5</a></accent> version of the <accent><a href="https://godotengine.org" target="_blank">Godot Engine</a></accent>. You can change the code to make it work on previous versions but things may not work as they should.</span>
+        
+        <h2>The block types</h2>
+        <span>In order to define the various possible behaviors during a conversation the system has a few sets of parameters called <accents>blocks</accents>. Each block has its own ways to be customized and connected to other blocks in order to create a rich dialogue experience.
+        
+        You can see below the block types and the way they can be used.</span>
+        
+		<h3>1. <accent><i>text</i></accent></h3>
+        <span>The most common type of dialogue block probably will be the <i>text</i> one. This is the simplest way to print a string in the players screen.</span>
+        <h4>The parameters</h4>
+		<table>
+            <tr>
+                <td class="parameter">type</td>
+                <td class="value">Must be set to <accent>"text"</accent>.</td>
+            </tr>
+            <tr>
+                <td class="parameter">content</td>
+                <td class="value">Here goes the <accent>string</accent> to be parsed and printed.</td>
+            </tr>
+            <tr>
+                <td class="parameter optional">next</td>
+                <td class="value">You can set the name of the next dialogue block. If the current block doesn't have a <accent>"next"</accent> parameter it will be the last dialogue block to be shown.</td>
+            </tr>
+        </table>
+		<p>Code example:</p>
+		<code><syntax-a>"block_name"</syntax-a>: {
+        <spc/><syntax-b>"type"</syntax-b>: <syntax-c>"text"</syntax-c>,
+        <spc/><syntax-b>"content"</syntax-b>: <syntax-c>"This string will be parsed and printed"</syntax-c>,
+        <spc/><syntax-b>"next"</syntax-b>: <syntax-c>"next_block_name"</syntax-c>
+        }
+		</code>
+        
+		<h3>2. <accent><i>divert</i></accent></h3>
+        <span>This type can be used when you want to show certain blocks based on conditions. Right now it only supports the <accent>"variable"</accent> condition but it will be exapnded in the future.</span>
+        <h4>The parameters</h4>
+		<table>
+            <tr>
+                <td class="parameter">type</td>
+                <td class="value">Must be set to <accent>"divert"</accent>.</td>
+            </tr>
+            <tr>
+                <td class="parameter">condition</td>
+                <td class="value">Only supports <accent>"variable"</accent> for now.</td>
+            </tr>
+            <tr>
+                <td class="parameter">variable</td>
+                <td class="value">Name of the variable to be checked for <accent>true</accent> or <accent>false</accent>.</td>
+            </tr>
+            <tr>
+                <td class="parameter">true</td>
+                <td class="value">The name of the block to be shown if the variable returns <accent>true</accent>.
+                </td>
+            </tr>
+            <tr>
+                <td class="parameter">false</td>
+                <td class="value">The name of the block to be shown if the variable returns <accent>false</accent>.</td>
+            </tr>
+        </table>
+		<p>Code example:</p>
+		<code><syntax-a>"block_name"</syntax-a>: {
+        <spc/><syntax-b>"type"</syntax-b>: <syntax-c>"divert"</syntax-c>,
+        <spc/><syntax-b>"condition"</syntax-b>: <syntax-c>"variable"</syntax-c>,
+        <spc/><syntax-b>"variable"</syntax-b>: <syntax-c>"variable_name"</syntax-c>,
+        <spc/><syntax-b>"true"</syntax-b>: <syntax-c>"block_name_if_true"</syntax-c>
+        <spc/><syntax-b>"false"</syntax-b>: <syntax-c>"block_name_if_false"</syntax-c>
+        }
+		</code>
+        
+		<h3>3. <accent><i>question</i></accent></h3>
+        <span>This type allows you to have a question with multiple options for the player to choose. Based on the answer you can call another block of any type.</span>
+        <h4>The parameters</h4>
+		<table>
+            <tr>
+                <td class="parameter">type</td>
+                <td class="value">Must be set to <accent>"question"</accent>.</td>
+            </tr>
+            <tr>
+                <td class="parameter">text</td>
+                <td class="value">Here goes the question <accent>string</accent> to be parsed and printed as a question. If the typewriter effect is active the player will only be allowed to select an option once the script has done printing the entire text.</td>
+            </tr>
+            <tr>
+                <td class="parameter">options</td>
+                <td class="value">Here goes an <accent>array</accent> of <accent>strings</accent> to be displayed as choices. You can use as many options as you like.</td>
+            </tr>
+            <tr>
+                <td class="parameter">next</td>
+                <td class="value">Here goes an <accent>array</accent> of <accent>strings</accent> with the names of the blocks to show based on the player's answer.
+                 <b>Important:</b> This array must have the same size of <accent>"options"</accent>.
+                </td>
+            </tr>
+        </table>
+		<p>Code example:</p>
+		<code><syntax-a>"block_name"</syntax-a>: {
+        <spc/><syntax-b>"type"</syntax-b>: <syntax-c>"question"</syntax-c>,
+        <spc/><syntax-b>"text"</syntax-b>: <syntax-c>"String to be parsed and printed."</syntax-c>,
+        <spc/><syntax-b>"options"</syntax-b>: <syntax-c>["Text for option 1", "Text for option 2"]</syntax-c>,
+        <spc/><syntax-b>"next"</syntax-b>: <syntax-c>["block_for_option_1", "block_for_option_2"]</syntax-c>
+        }
+		</code>
+        
+		<h3>4. <accent><i>action</i></accent></h3>
+        <span>This type allows you to perform an action without having to print anything. For now it just updates variables.</span>
+        <h4>The parameters</h4>
+		<table>
+            <tr>
+                <td class="parameter">type</td>
+                <td class="value">Must be set to <accent>"action"</accent>.</td>
+            </tr>
+            <tr>
+                <td class="parameter optional">text</td>
+                <td class="value">Here goes a <accent>string</accent> to be parsed and printed. If the block has no <accent>"text"</accent> parameter it will execute the action and then, if available, go to the <accent>"next"</accent> block.</td>
+            </tr>
+            <tr>
+                <td class="parameter">value</td>
+                <td class="value">Here goes three values.
+                    The first one must be a <accent>string</accent> with the name of the action. Right now the only action available is <accent>"variable"</accent>.
+                    The second one is the <accent>key</accent> (or keys) that is going to be updated. It can be a <accent>string</accent> <i>or</i> an <accent>array</accent> of <accent>strings</accent>.
+                    The third one is the <accent>value</accent> (or values) to be assigned to the key(s) defined before. It can be a <accent>string</accent> <i>or</i> an <accent>array</accent> of <accent>strings</accent>.
+                    <b>Important:</b> if you use a <accent>string</accent> in the second value and an <accent>array</accent> in the third one, the variable's value will be the <accent>array</accent> itself. If you use an <accent>array</accent> on the second value, you must use an <accent>array</accent> with the same size as the third value.
+                </td>
+            </tr>
+            <tr>
+                <td class="parameter optional">next</td>
+                <td class="value">You can set the name of the next dialogue block. If the current block doesn't have a <accent>"next"</accent> parameter it will be the last dialogue block to be shown.</td>
+            </tr>
+        </table>
+		<p>Code example:</p>
+		<code><syntax-a>"block_name"</syntax-a>: {
+        <spc/><syntax-b>"type"</syntax-b>: <syntax-c>"action"</syntax-c>,
+        <spc/><syntax-b>"text"</syntax-b>: <syntax-c>"String to be parsed and printed."</syntax-c>,
+        <spc/><syntax-b>"value"</syntax-b>: <syntax-c>["variable", "name_of_the_variable", "value"]</syntax-c>,
+        <spc/><syntax-b>"next"</syntax-b>: <syntax-c>["next_block_name"]</syntax-c>
+        }
+		</code>
+        
+        
+        <h2>Changelog</h2>
+        <h4 class="release"><label class="update">v1.0</label>Jan 7th, 2019</h4>
+            <ul>
+                <li>First release.</li>
+            </ul>
+        <hr>
+        <footer>
+            Created by <a href="https://twitter.com/jsena42" target="_blank">J. Sena</a>
+        </footer>
+	</body>
+</html>
+
