@@ -78,7 +78,7 @@ li::before{
 }
 
 h1::after {
-    content: "v1.0";
+    content: "v1.1";
     background: var(--accent);
     color: #fff;
     font-size: 1.25rem;
@@ -120,6 +120,13 @@ h5, h6 {
     font-weight: bold;
 }
 
+.logo {
+    max-height: 56px;
+    margin-bottom: -0.56rem;
+    margin-right: 0.3rem;
+    margin-left: 0;
+}
+
 span {
     white-space: pre-line;
 }
@@ -127,7 +134,6 @@ span {
 table {
     width: 100%;
 }
-
 tr:nth-child(odd){
     background: #e4e4e4;
 }

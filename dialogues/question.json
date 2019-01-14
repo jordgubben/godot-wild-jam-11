@@ -1,33 +1,39 @@
 {
   "first": {
     "type": "text",
-    "content": "Hello.| This dialogue has a question. Use the 'up' and 'down' arrow keys to select a choice and then press Continue.",
-    "next": "0"
+    "content": "Hello.| This dialogue has a [b]question[/b]. Use the [b]'up'[/b] and [b]'down'[/b] arrow keys to select a choice and then press the [i]Continue[/i] button.",
+    "next": "question_block"
   },
   "repeat": {
     "type": "text",
-    "content": "Hey.| Hope you payed attention on the first time.| I'm not going to repeat.",
-    "next": "0"
+    "content": "Hey.| Hope you payed attention on the first time.| I'm [b]not[/b] going to repeat.",
+    "next": "question_block"
   },
-  "0": {
+  "question_block": {
     "type": "question",
     "text": "What is your favorite option?| Stop looking at me!| This is not a silly question|| ...I guess.",
     "options": ["Option 1", "Option 2", "Option 3"],
-    "next": ["1", "2", "3"]
+    "next": ["chose_option_1", "chose_option_2", "chose_option_3"]
   },
-  "1": {
+  "chose_option_1": {
     "type": "action",
+    "operation": "variable",
+    "dictionary": "variables",
     "text": "Option 1 is a nice option.",
-    "value": ["variable", "question", ["1"]]
+    "value": [["question", "1"]]
   },
-  "2": {
+  "chose_option_2": {
     "type": "action",
+    "operation": "variable",
+    "dictionary": "variables",
     "text": "This 'two' is my favorite option.",
-    "value": ["variable", "question", ["2"]]
+    "value": [["question", "2"]]
   },
-  "3": {
+  "chose_option_3": {
     "type": "action",
+    "operation": "variable",
+    "dictionary": "variables",
     "text": "Too bored to write a third sentence.",
-    "value": ["variable", "question", ["3"]]
+    "value": [["question", "3"]]
   }
 }

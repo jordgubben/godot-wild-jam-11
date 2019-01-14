@@ -1,7 +1,7 @@
 {
   "first": {
     "type": "text",
-    "content": "Hello.| This is the first time we met.",
+    "content": "Hi!| This is the first time we met.| Nice to meet you!",
     "next": "0"
   },
   "repeat": {
@@ -11,7 +11,7 @@
   },
   "0": {
     "type": "text",
-    "content": "This is just a [u]formated[/u] text.| Be sure to set the fonts for other styles if you want to use them.",
+    "content": "This is just a formated text.@|You can use [b]bold[/b]|, [i]italic[/i]|, [b][i]bold and italic[/i][/b] or any bbcode style you want ||(even [color=red]c[/color][color=#ff7800]o[/color][color=yellow]l[/color][color=lime]o[/color][color=#00f1ff]r[/color][color=#c200ff]s[/color]!).@|Just be sure to set the fonts for other styles if you want to use them.",
     "next": "1"
   },
   "1": {

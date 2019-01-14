@@ -1,129 +1,206 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://DialogueSystem.gd" type="Script" id=1]
-[ext_resource path="res://buttons.gd" type="Script" id=2]
+[ext_resource path="res://ui.gd" type="Script" id=1]
+[ext_resource path="res://fonts/adobe_source_san_pro_ttf/godot_font_format/source_sans_pro_regular_16.tres" type="DynamicFont" id=2]
+[ext_resource path="res://fonts/adobe_source_san_pro_ttf/godot_font_format/source_sans_pro_bold_16.tres" type="DynamicFont" id=3]
+[ext_resource path="res://Dialogue.tscn" type="PackedScene" id=4]
 
 [node name="Main" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-script = ExtResource( 1 )
 
-[node name="ColorRect" type="ColorRect" parent="."]
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-margin_left = -512.0
-margin_top = -224.0
-margin_right = 512.0
-color = Color( 0.175781, 0.175781, 0.175781, 1 )
-
-[node name="RichTextLabel" type="RichTextLabel" parent="ColorRect"]
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -500.0
-margin_top = -100.0
-margin_right = 500.0
-margin_bottom = 100.0
-bbcode_enabled = true
-scroll_active = false
-
-[node name="Choices" type="Control" parent="ColorRect"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-
-[node name="Position2D" type="Position2D" parent="ColorRect/Choices"]
-position = Vector2( 30.8175, 83.3866 )
-
-[node name="Timer" type="Timer" parent="."]
-
-[node name="ColorRect2" type="ColorRect" parent="."]
+[node name="Variables" type="ColorRect" parent="."]
 anchor_left = 1.0
 anchor_right = 1.0
 margin_left = -357.0
-margin_bottom = 376.0
+margin_bottom = 401.0
 color = Color( 0.101961, 0.101961, 0.101961, 1 )
 
-[node name="Label" type="Label" parent="ColorRect2"]
-margin_left = 10.0
+[node name="Label" type="Label" parent="Variables"]
+margin_left = 9.0
 margin_top = 10.0
-margin_right = 40.0
-margin_bottom = 14.0
+margin_right = 345.0
+margin_bottom = 164.0
+autowrap = true
 
-[node name="buttons" type="Control" parent="."]
+[node name="UI" type="Control" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-script = ExtResource( 2 )
+margin_left = 8.41266
+margin_top = -4.7063
+margin_right = 8.4126
+margin_bottom = -4.7063
+script = ExtResource( 1 )
 
-[node name="next" type="Button" parent="buttons"]
-margin_left = 331.935
-margin_top = 350.334
-margin_right = 400.935
-margin_bottom = 370.334
+[node name="InitiateA" type="Button" parent="UI"]
+margin_left = 7.92792
+margin_top = 18.5382
+margin_right = 212.928
+margin_bottom = 45.5382
 focus_mode = 0
-size_flags_horizontal = 15
-shortcut_in_tooltip = false
-enabled_focus_mode = 0
-text = "Continue"
-
-[node name="clear" type="Button" parent="buttons"]
-margin_left = 869.603
-margin_top = 333.492
-margin_right = 938.603
-margin_bottom = 353.492
-focus_mode = 0
-size_flags_horizontal = 15
-shortcut_in_tooltip = false
-enabled_focus_mode = 0
-text = "Clear"
-
-[node name="set_var" type="Button" parent="buttons"]
-margin_left = 752.761
-margin_top = 333.492
-margin_right = 843.761
-margin_bottom = 353.492
-focus_mode = 0
-size_flags_horizontal = 15
-shortcut_in_tooltip = false
-enabled_focus_mode = 0
-text = "var1 = true"
-
-[node name="initiate_a" type="Button" parent="buttons"]
-margin_left = 10.0
-margin_top = 25.1402
-margin_right = 71.0
-margin_bottom = 45.1402
-focus_mode = 0
+custom_fonts/font = ExtResource( 2 )
 shortcut_in_tooltip = false
 enabled_focus_mode = 0
 text = "Initiate 'just_text' dialogue"
 
-[node name="initiate_b" type="Button" parent="buttons"]
-margin_left = 209.211
-margin_top = 25.1402
-margin_right = 391.211
-margin_bottom = 45.1402
+[node name="InitiateB" type="Button" parent="UI"]
+margin_left = 223.928
+margin_top = 18.5382
+margin_right = 425.928
+margin_bottom = 45.5382
 focus_mode = 0
+custom_fonts/font = ExtResource( 2 )
 shortcut_in_tooltip = false
 enabled_focus_mode = 0
 text = "Initiate 'question' dialogue"
 
-[node name="initiate_c" type="Button" parent="buttons"]
-margin_left = 409.294
-margin_top = 25.1402
-margin_right = 590.294
-margin_bottom = 45.1402
+[node name="InitiateC" type="Button" parent="UI"]
+margin_left = 435.928
+margin_top = 18.5382
+margin_right = 642.928
+margin_bottom = 45.5382
 focus_mode = 0
+custom_fonts/font = ExtResource( 2 )
 shortcut_in_tooltip = false
 enabled_focus_mode = 0
 text = "Initiate 'complex' dialogue"
 
-[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
-[connection signal="pressed" from="buttons/next" to="buttons" method="press_next"]
-[connection signal="pressed" from="buttons/clear" to="buttons" method="clear"]
-[connection signal="pressed" from="buttons/set_var" to="buttons" method="set_var"]
-[connection signal="pressed" from="buttons/initiate_a" to="buttons" method="init_a"]
-[connection signal="pressed" from="buttons/initiate_b" to="buttons" method="init_b"]
-[connection signal="pressed" from="buttons/initiate_c" to="buttons" method="init_c"]
+[node name="Continue" type="Button" parent="UI"]
+margin_left = 333.0
+margin_top = 350.0
+margin_right = 415.0
+margin_bottom = 377.0
+focus_mode = 0
+size_flags_horizontal = 15
+custom_fonts/font = ExtResource( 3 )
+shortcut_in_tooltip = false
+enabled_focus_mode = 0
+text = "Continue"
+
+[node name="Clear" type="Button" parent="UI"]
+margin_left = 859.687
+margin_top = 311.577
+margin_right = 993.687
+margin_bottom = 338.577
+focus_mode = 0
+size_flags_horizontal = 15
+custom_fonts/font = ExtResource( 2 )
+shortcut_in_tooltip = false
+enabled_focus_mode = 0
+text = "Clear Dictionaries"
+
+[node name="SetVars" type="Button" parent="UI"]
+margin_left = 894.449
+margin_top = 366.485
+margin_right = 995.449
+margin_bottom = 393.485
+focus_mode = 0
+size_flags_horizontal = 15
+custom_fonts/font = ExtResource( 2 )
+shortcut_in_tooltip = false
+enabled_focus_mode = 0
+text = "Set Variables"
+
+[node name="Vars" type="Label" parent="UI"]
+margin_left = 673.847
+margin_top = 178.118
+margin_right = 715.847
+margin_bottom = 391.118
+custom_fonts/font = ExtResource( 2 )
+text = "var1 =
+
+var2 =
+
+var3 =
+
+var4 =
+
+var5 ="
+
+[node name="Var1" type="LineEdit" parent="UI"]
+margin_left = 722.0
+margin_top = 177.068
+margin_right = 810.0
+margin_bottom = 208.068
+focus_mode = 1
+custom_fonts/font = ExtResource( 2 )
+max_length = 10
+focus_mode = 1
+placeholder_text = "true"
+placeholder_alpha = 0.2
+caret_blink = true
+
+[node name="Var2" type="LineEdit" parent="UI"]
+margin_left = 722.0
+margin_top = 224.309
+margin_right = 810.0
+margin_bottom = 255.309
+focus_mode = 1
+custom_fonts/font = ExtResource( 2 )
+max_length = 10
+focus_mode = 1
+placeholder_text = "2"
+placeholder_alpha = 0.2
+caret_blink = true
+
+[node name="Var3" type="LineEdit" parent="UI"]
+margin_left = 722.0
+margin_top = 272.316
+margin_right = 810.0
+margin_bottom = 303.316
+focus_mode = 1
+custom_fonts/font = ExtResource( 2 )
+max_length = 10
+focus_mode = 1
+placeholder_text = "5"
+placeholder_alpha = 0.2
+caret_blink = true
+
+[node name="Var4" type="LineEdit" parent="UI"]
+margin_left = 722.0
+margin_top = 318.743
+margin_right = 810.0
+margin_bottom = 349.743
+focus_mode = 1
+custom_fonts/font = ExtResource( 2 )
+max_length = 10
+focus_mode = 1
+placeholder_text = "5"
+placeholder_alpha = 0.2
+caret_blink = true
+
+[node name="Var5" type="LineEdit" parent="UI"]
+margin_left = 722.0
+margin_top = 364.771
+margin_right = 810.0
+margin_bottom = 395.771
+focus_mode = 1
+custom_fonts/font = ExtResource( 2 )
+max_length = 10
+focus_mode = 1
+placeholder_text = "5"
+placeholder_alpha = 0.2
+caret_blink = true
+
+[node name="Dialogue" parent="." instance=ExtResource( 4 )]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_top = -210.0
+margin_bottom = -210.0
+
+[node name="Frame" parent="Dialogue" index="1"]
+margin_left = -450.0
+margin_top = 0.0
+margin_right = 450.0
+margin_bottom = 200.0
+
+[node name="RichTextLabel" parent="Dialogue/Frame" index="0"]
+margin_left = -440.0
+margin_top = -90.0
+margin_right = 440.0
+margin_bottom = 90.0
+
+
+[editable path="Dialogue"]

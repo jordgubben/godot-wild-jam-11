@@ -1,16 +1,22 @@
 <html>
 	<head>
         <title>Godot Open Dialogue - DOCS</title>
-        <meta author="J. Sena" version="1.0">
+        <meta author="J. Sena" version="1.1">
 		<link rel="stylesheet" href="style.css">
 	</head>
 
 	<body>				
 		
-        <h1>Godot Open Dialogue</h1>
+        <h1><img src="logo_transparent.png" class="logo">Godot Open Dialogue</h1>
         <h2>About</h2>
-        <span>The Godot Open Dialogue is a non-linear conversation system created by <a href="https://twitter.com/jsena42" target="_blank">J. Sena</a> and released as <accent>CC-BY</accent>.
-        This system was created using the <accent><a href="https://godotengine.org/article/dev-snapshot-godot-3-1-alpha-5" target="_blank">3.1 alpha 5</a></accent> version of the <accent><a href="https://godotengine.org" target="_blank">Godot Engine</a></accent>. You can change the code to make it work on previous versions but things may not work as they should.</span>
+        <h3>The project</h3>
+        <span>The Godot Open Dialogue is a non-linear conversation system created by <a href="https://jsena42.bitbucket.io/" target="_blank">J. Sena</a> and released as <accent>CC-BY</accent>.
+        The current version of the system requires the <accent><a href="https://godotengine.org/article/dev-snapshot-godot-3-1-beta-1" target="_blank">3.1 beta 1</a></accent> (or newer) version of the <accent><a href="https://godotengine.org" target="_blank">Godot Engine</a></accent>. You can change the code to make it work on previous versions but things may not work as they should.</span>
+        
+        <h3>The license</h3>
+        <span>I put a lot of time and effort on this project to make sure it is bug free (as much as possible), easy to use and fits the needs of most projects. By releasing it under the <accent>CC-BY</accent> license I <b>don't</b> intend to have my name included in the credits of your game (it would be awesome if you do but you <i>don't</i> have to). Just make sure to credit me if you <b>share</b> the code of your project (<i>i.e. game jam projects</i>).
+
+        Feel free to <a href="https://twitter.com/jsena42" target="_blank">get in touch</a> to tell me you're using my script on a project. It will greatly help me to keep myself motivated and release new versions.</span>
         
         <h2>The block types</h2>
         <span>In order to define the various possible behaviors during a conversation the system has a few sets of parameters called <accents>blocks</accents>. Each block has its own ways to be customized and connected to other blocks in order to create a rich dialogue experience.
@@ -42,8 +48,8 @@
         }
 		</code>
         
-		<h3>2. <accent><i>divert</i></accent></h3>
-        <span>This type can be used when you want to show certain blocks based on conditions. Right now it only supports the <accent>"variable"</accent> condition but it will be exapnded in the future.</span>
+		<h3>2. <accent><i>divert</i> </accent><label class="update">updated</label></h3>
+        <span>This type can be used when you want to show certain blocks based on conditions.</span>
         <h4>The parameters</h4>
 		<table>
             <tr>
@@ -52,32 +58,90 @@
             </tr>
             <tr>
                 <td class="parameter">condition</td>
-                <td class="value">Only supports <accent>"variable"</accent> for now.</td>
+                <td class="value">Can be <accent>"boolean"</accent>, <accent>"equal"</accent>, <accent>"greater"</accent>, <accent>"less"</accent> or <accent>"range"</accent>.</td>
+            </tr>
+            <tr>
+                <td class="parameter">dictionary</td>
+                <td class="value">Name of the dictionary containing the <accent>"variable"</accent> to check.</td>
             </tr>
             <tr>
                 <td class="parameter">variable</td>
-                <td class="value">Name of the variable to be checked for <accent>true</accent> or <accent>false</accent>.</td>
+                <td class="value">Name of the variable to check.</td>
+            </tr>
+            <tr>
+                <td class="parameter">value</td>
+                <td class="value">Unless your <accent>"condition"</accent> is set to <accent>"boolean"</accent> you must specify a value to perform the check.
+                <b>Important:</b> If you are using <accent>"equal"</accent> as condition you can set the <accent>"value"</accent> to any type (i.e. <i>string, array, int, float</i>). If you are using <accent>"greater"</accent> or <accent>"less"</accent> it needs to be <accent>int</accent> or <accent>float</accent>. If you are using <accent>"range"</accent> it must be an <accent>array</accent> with two values (<accent>int</accent> or <accent>float</accent>)</td>
             </tr>
             <tr>
                 <td class="parameter">true</td>
-                <td class="value">The name of the block to be shown if the variable returns <accent>true</accent>.
+                <td class="value">The name of the block to be called if the check returns <accent>true</accent>.
                 </td>
             </tr>
             <tr>
                 <td class="parameter">false</td>
-                <td class="value">The name of the block to be shown if the variable returns <accent>false</accent>.</td>
+                <td class="value">The name of the block to be called if the check returns <accent>false</accent>.</td>
             </tr>
         </table>
-		<p>Code example:</p>
-		<code><syntax-a>"block_name"</syntax-a>: {
+        <p>Code example for <accent>"boolean"</accent>:</p>
+        <code><syntax-a>"block_name"</syntax-a>: {
         <spc/><syntax-b>"type"</syntax-b>: <syntax-c>"divert"</syntax-c>,
-        <spc/><syntax-b>"condition"</syntax-b>: <syntax-c>"variable"</syntax-c>,
+        <spc/><syntax-b>"condition"</syntax-b>: <syntax-c>"boolean"</syntax-c>,
+        <spc/><syntax-b>"dictionary"</syntax-b>: <syntax-c>"variables"</syntax-c>,
         <spc/><syntax-b>"variable"</syntax-b>: <syntax-c>"variable_name"</syntax-c>,
-        <spc/><syntax-b>"true"</syntax-b>: <syntax-c>"block_name_if_true"</syntax-c>
+        <spc/><syntax-b>"true"</syntax-b>: <syntax-c>"block_name_if_true"</syntax-c>,
         <spc/><syntax-b>"false"</syntax-b>: <syntax-c>"block_name_if_false"</syntax-c>
         }
-		</code>
+        </code>
         
+        <p>Code example for <accent>"equal"</accent>:</p>
+        <code><syntax-a>"block_name"</syntax-a>: {
+        <spc/><syntax-b>"type"</syntax-b>: <syntax-c>"divert"</syntax-c>,
+        <spc/><syntax-b>"condition"</syntax-b>: <syntax-c>"equal"</syntax-c>,
+        <spc/><syntax-b>"dictionary"</syntax-b>: <syntax-c>"variables"</syntax-c>,
+        <spc/><syntax-b>"variable"</syntax-b>: <syntax-c>"variable_name"</syntax-c>,
+        <spc/><syntax-b>"value"</syntax-b>: <syntax-c>"string example"</syntax-c>,
+        <spc/><syntax-b>"true"</syntax-b>: <syntax-c>"block_name_if_true"</syntax-c>,
+        <spc/><syntax-b>"false"</syntax-b>: <syntax-c>"block_name_if_false"</syntax-c>
+        }
+        </code>
+
+        <p>Code example for <accent>"greater"</accent>:</p>
+        <code><syntax-a>"block_name"</syntax-a>: {
+        <spc/><syntax-b>"type"</syntax-b>: <syntax-c>"divert"</syntax-c>,
+        <spc/><syntax-b>"condition"</syntax-b>: <syntax-c>"greater"</syntax-c>,
+        <spc/><syntax-b>"dictionary"</syntax-b>: <syntax-c>"variables"</syntax-c>,
+        <spc/><syntax-b>"variable"</syntax-b>: <syntax-c>"variable_name"</syntax-c>,
+        <spc/><syntax-b>"value"</syntax-b>: <syntax-c>5</syntax-c>,
+        <spc/><syntax-b>"true"</syntax-b>: <syntax-c>"block_name_if_true"</syntax-c>,
+        <spc/><syntax-b>"false"</syntax-b>: <syntax-c>"block_name_if_false"</syntax-c>
+        }
+        </code>
+
+        <p>Code example for <accent>"less"</accent>:</p>
+        <code><syntax-a>"block_name"</syntax-a>: {
+        <spc/><syntax-b>"type"</syntax-b>: <syntax-c>"divert"</syntax-c>,
+        <spc/><syntax-b>"condition"</syntax-b>: <syntax-c>"less"</syntax-c>,
+        <spc/><syntax-b>"dictionary"</syntax-b>: <syntax-c>"variables"</syntax-c>,
+        <spc/><syntax-b>"variable"</syntax-b>: <syntax-c>"variable_name"</syntax-c>,
+        <spc/><syntax-b>"value"</syntax-b>: <syntax-c>5</syntax-c>,
+        <spc/><syntax-b>"true"</syntax-b>: <syntax-c>"block_name_if_true"</syntax-c>,
+        <spc/><syntax-b>"false"</syntax-b>: <syntax-c>"block_name_if_false"</syntax-c>
+        }
+        </code>
+        
+
+        <p>Code example for <accent>"range"</accent>:</p>
+        <code><syntax-a>"block_name"</syntax-a>: {
+        <spc/><syntax-b>"type"</syntax-b>: <syntax-c>"divert"</syntax-c>,
+        <spc/><syntax-b>"condition"</syntax-b>: <syntax-c>"range"</syntax-c>,
+        <spc/><syntax-b>"dictionary"</syntax-b>: <syntax-c>"variables"</syntax-c>,
+        <spc/><syntax-b>"variable"</syntax-b>: <syntax-c>"variable_name"</syntax-c>,
+        <spc/><syntax-b>"value"</syntax-b>: <syntax-c>[3, 6]</syntax-c>,
+        <spc/><syntax-b>"true"</syntax-b>: <syntax-c>"block_name_if_true"</syntax-c>,
+        <spc/><syntax-b>"false"</syntax-b>: <syntax-c>"block_name_if_false"</syntax-c>
+        }
+        </code>
 		<h3>3. <accent><i>question</i></accent></h3>
         <span>This type allows you to have a question with multiple options for the player to choose. Based on the answer you can call another block of any type.</span>
         <h4>The parameters</h4>
@@ -110,8 +174,8 @@
         }
 		</code>
         
-		<h3>4. <accent><i>action</i></accent></h3>
-        <span>This type allows you to perform an action without having to print anything. For now it just updates variables.</span>
+		<h3>4. <accent><i>action</i></accent> <label class="update">updated</label></h3>
+        <span>This type allows you to perform an action without having to print anything.</span>
         <h4>The parameters</h4>
 		<table>
             <tr>
@@ -123,37 +187,130 @@
                 <td class="value">Here goes a <accent>string</accent> to be parsed and printed. If the block has no <accent>"text"</accent> parameter it will execute the action and then, if available, go to the <accent>"next"</accent> block.</td>
             </tr>
             <tr>
+                <td class="parameter">operation</td>
+                <td class="value">The operations available for now are <accent>"variable"</accent> and <accent>"random"</accent>.</td>
+            </tr>
+            <tr>
+                <td class="parameter">dictionary</td>
+                <td class="value">If you choose to perform the <accent>"variable"</accent> operation you must specify the dictionary containing the variable to be updated.</td>
+            </tr>
+            <tr>
                 <td class="parameter">value</td>
-                <td class="value">Here goes three values.
-                    The first one must be a <accent>string</accent> with the name of the action. Right now the only action available is <accent>"variable"</accent>.
-                    The second one is the <accent>key</accent> (or keys) that is going to be updated. It can be a <accent>string</accent> <i>or</i> an <accent>array</accent> of <accent>strings</accent>.
-                    The third one is the <accent>value</accent> (or values) to be assigned to the key(s) defined before. It can be a <accent>string</accent> <i>or</i> an <accent>array</accent> of <accent>strings</accent>.
-                    <b>Important:</b> if you use a <accent>string</accent> in the second value and an <accent>array</accent> in the third one, the variable's value will be the <accent>array</accent> itself. If you use an <accent>array</accent> on the second value, you must use an <accent>array</accent> with the same size as the third value.
+                <td class="value">If you want to perform the <accent>"variable"</accent> this parameter should be an <accent>array</accent> of <accent>arrays</accent> (even if you are only updating one variable) the <accent>subarrays</accent> having the variable name as the <accent>index 0</accent> and the value as the <accent>index 1</accent>.
+                In case you choose to perform the <accent>"random"</accent> operation this parameter must be an <accent>array</accent> of <accent>strings</accent> contaning the names of the blocks to be randomly picked.
                 </td>
             </tr>
             <tr>
                 <td class="parameter optional">next</td>
-                <td class="value">You can set the name of the next dialogue block. If the current block doesn't have a <accent>"next"</accent> parameter it will be the last dialogue block to be shown.</td>
+                <td class="value">You can set the name of the next dialogue block. If the current block doesn't have a <accent>"next"</accent> parameter it will be the last dialogue block to be shown.
+                <b>Important:</b> This will not have any effect if you choose to perform the <accent>"random"</accent> operation.</td>
             </tr>
         </table>
-		<p>Code example:</p>
+        <p>Code example for <accent>"variable"</accent>:</p>
+        <code><syntax-a>"block_name"</syntax-a>: {
+        <spc/><syntax-b>"type"</syntax-b>: <syntax-c>"action"</syntax-c>,
+        <spc/><syntax-b>"operation"</syntax-b>: <syntax-c>"variable"</syntax-c>,
+        <spc/><syntax-b>"dictionary"</syntax-b>: <syntax-c>"variables"</syntax-c>,
+        <spc/><syntax-b>"text"</syntax-b>: <syntax-c>"Optional string to be parsed and printed."</syntax-c>,
+        <spc/><syntax-b>"value"</syntax-b>: <syntax-c>[["var_1", true], ["var_2", "oranges"]]</syntax-c>,
+        <spc/><syntax-b>"next"</syntax-b>: <syntax-c>["next_block_name"]</syntax-c>
+        }
+
+        </code>
+		<p>Code example for <accent>"random"</accent>:</p>
 		<code><syntax-a>"block_name"</syntax-a>: {
         <spc/><syntax-b>"type"</syntax-b>: <syntax-c>"action"</syntax-c>,
-        <spc/><syntax-b>"text"</syntax-b>: <syntax-c>"String to be parsed and printed."</syntax-c>,
-        <spc/><syntax-b>"value"</syntax-b>: <syntax-c>["variable", "name_of_the_variable", "value"]</syntax-c>,
-        <spc/><syntax-b>"next"</syntax-b>: <syntax-c>["next_block_name"]</syntax-c>
+        <spc/><syntax-b>"operation"</syntax-b>: <syntax-c>"random"</syntax-c>,
+        <spc/><syntax-b>"text"</syntax-b>: <syntax-c>"Optional string to be parsed and printed."</syntax-c>,
+        <spc/><syntax-b>"value"</syntax-b>: <syntax-c>["block_name_1", "block_name_2", "block_name_3"]</syntax-c>
         }
 		</code>
         
-        
+        <br/>
+        <h2>F.A.Q.</h2>
+        <h3>Can I use <accent>bbcode</accent>?</h3>
+        <span><b>Yes</b>. You can use all the <accent>bbcode</accent> functions available in <accent>Godot</accent> but you should <b>always</b> use <b><accent>@</accent></b> (or any other character you set in the script configuration variables) to indicate <accent>line breaks</accent>. If you use <accent>\n</accent> or just put the text in different lines it will mess with the <accent>typewriter</accent> effect</span>
+        </code>
+        <p><accent><b>Correct</b></accent> way of using multiple lines:</p>
+        <code><syntax-b>"text"</syntax-b>: <syntax-c>"This text goes in the first line.@This one goes in the second line."</syntax-c>
+        </code><br/>
+
+        <h3>How can I set pauses?</h3>
+        <span>You can indicate pauses during the text by just putting a <b><accent>|</accent></b> (or any other character you set in the script configuration variables) in the places you want the text to pause for a while. You can use as many pauses as you want but they will <b>not</b> if there are the last characters in the string.</span>
+        </code>
+        <p><accent><b>Correct</b></accent> way of using pauses:</p>
+        <code><syntax-b>"text"</syntax-b>: <syntax-c>"Hi.| This is how we use pauses.| You can use multiple pauses for||| ...dramatic effect!"</syntax-c>
+        </code><br/>
+
+        <h3>What are the features planned for the next version?</h3>
+        <span>I actually don't have a classic roadmap for this project. I have several features in mind but they will only be implemented if they match these conditions: <br/><br/></span>
+        <ul>
+            <li>Be possible to implement without needing to rewrite the core functionalities of Godot (i.e. <i>shaking</i> text will not be available since it is not possible using the <accent>RichTextLabel</accent> node);</li><br/>
+            
+            <li>Be useful for many types of games (I will not spend time trying to make a specific functionality to be used only for two or three developers).</li><br/>
+
+        </ul>
+
+        <h3>Is this project still being developed?</h3>
+        <span>If you are reading the <accent><a href="https://jsena42.bitbucket.io/god" target="_blank">online</a></accent> version of this page, the answer is <b>yes</b>.</span> 
+
+
+        <h3>When the next version is going to be released?</h3>
+        <span>I honestly have no idea. It can be tomorrow, next week or next month. Since I'm working on this project on my free time I cannot tell for sure when the next version is going to be availabe. Be sure to follow me on <a href="https://twitter.com/jsena42" target="_blank">Twitter</a> and/or favorite the <a href="https://bitbucket.org/jsena42/godot-open-dialogue/" target="_blank">official repository</a> to know when it is available.</span>
+
+
+        <h3>I have some ideias. How can I contact you?</h3>
+        <span>If you have any suggestions you can open an issue in the <a href="https://bitbucket.org/jsena42/godot-open-dialogue/" target="_blank">official repository</a> of contact me via <a href="https://twitter.com/jsena42" target="_blank">Twitter</a> but do not expect your suggestions to be accepted unless they are really useful.
+
+        </span>
+
+        <h3>My game have some specific needs that may not fit the project. Are you available for hiring?</h3>
+        <span><b>Yes</b>. I'm available as a freelancer programmer (for Godot only). Contact me via <a href="https://twitter.com/jsena42" target="_blank">Twitter</a> and we'll talk about your project. <accent><b>;)</b></accent></span>
+
+
+
         <h2>Changelog</h2>
+        <h4 class="release"><label class="update">v1.1</label>Jan 14th, 2019</h4>
+            <ul>
+                <accent>Added:</accent>
+                <li>Open-source <accent><a href="https://github.com/adobe-fonts/source-sans-pro" target="_blank">Adobe Source Sans Pro</a></accent> font family included under the <accent><a href="https://opensource.org/licenses/OFL-1.1" target="_blank">SIL Open Font License 1.1</a></accent> </li>
+                <li><accent>"random"</accent> operation to the block type <accent>"action"</accent></li>
+                <li><accent>"equal"</accent>, <accent>"greater"</accent>, <accent>"less"</accent> and <accent>"range"</accent> operations added to the block type <accent>"divert"</accent></li>
+                <li><accent>"AnimationPlayer"</accent> added to the <accent>"Dialogue.tscn"</accent> scene</li>
+                <li><accent>"ContinueIndicator"</accent> added to the <accent>"Dialogue.tscn"</accent> scene</li>
+                <li>Dialog frame size can be set changing the <accent>"frame_width"</accent> and <accent>"frame_height"</accent> variables</li>
+                <li>Dialog frame vertical aligment can be set changing the <accent>"frame_position"</accent> variable</li>
+                <li>Dialog frame vertical margin can be set changing the <accent>"frame_margin_vertical"</accent> variable</li>
+                <li>Label margin can be set changing the <accent>"label_margin"</accent> variable</li>
+                <li>Choices vertical margin can be set changing the <accent>"choices_margin_vertical"</accent> variable</li>
+                <li>Choices horizontal margin can be set changing the <accent>"choices_margin_horizontal"</accent> variable</li>
+                <li>Choices horizontal text alignment can be set changing the <accent>"choices_text_alignment"</accent> variable</li>
+                <li><accent>"Choices"</accent> horizontal node alignment can be set changing the <accent>"choices_node_alignment"</accent> variable</li>
+                <li><accent>"BetaStuff.tscn"</accent> scene and <accent>"beta_stuff.gd"</accent> script added to test upcoming features without affect the stable ones</li> 
+                
+                <br/><accent>Updated:</accent>
+                <li>Project update to <accent><a href="https://godotengine.org/article/dev-snapshot-godot-3-1-beta-1" target="_blank">Godot 3.1 beta 1</a></accent></li>
+                <li>The whole project file structure has been updated for better consistency and ease of use</li>
+                <li>All the <accent>signals</accent> are now connect via <accent>GDScript</accent> for better customization</li>
+                <li>Dialogue examples cleaned and updated</li>
+                <li><accent>"variable"</accent> condition renamed to <accent>"boolean"</accent> in the <accent>"action"</accent> block type</li>
+                <li>Choices now are aligned to the bottom right corner of the dialog frame by default</li>
+                <li>If typewriter effect is active all choices are now grey by default until the question is completely displayed</li>
+                <li>All operations using <accent>variables</accent> must specify a <accent>dictionary</accent></li>
+                
+                <br/><accent>Fixed:</accent>
+                <li>Using multiple lines now works properly. Just use <accent>@</accent> instead of <accent>\n</accent></li>
+                
+                <br/><accent>Removed:</accent>
+                <li><accent>"Position2D"</accent> removed from <accent>"Choices"</accent> node in <accent>"Dialogue.tscn"</accent> scene</li>
+            </ul>
         <h4 class="release"><label class="update">v1.0</label>Jan 7th, 2019</h4>
             <ul>
-                <li>First release.</li>
+                <li>First release</li>
             </ul>
         <hr>
         <footer>
-            Created by <a href="https://twitter.com/jsena42" target="_blank">J. Sena</a>
+            Created by <a href="https://jsena42.bitbucket.io/" target="_blank">J. Sena</a>
         </footer>
 	</body>
 </html>
