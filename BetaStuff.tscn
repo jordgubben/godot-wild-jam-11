@@ -1,51 +1,22 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=2 format=2]
 
 [ext_resource path="res://beta_stuff.gd" type="Script" id=1]
-[ext_resource path="res://img/characters/jimmy/02.png" type="Texture" id=2]
-[ext_resource path="res://fonts/adobe_source_san_pro_ttf/godot_font_format/source_sans_pro_bold_16.tres" type="DynamicFont" id=3]
-[ext_resource path="res://fonts/adobe_source_san_pro_ttf/godot_font_format/source_sans_pro_regular_16.tres" type="DynamicFont" id=4]
 
 [node name="BetaStuff" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 1 )
 
-[node name="SpriteLeft" type="Sprite" parent="."]
-position = Vector2( 295.027, 327.632 )
-texture = ExtResource( 2 )
-
-[node name="SpriteRight" type="Sprite" parent="."]
-position = Vector2( 748.305, 327.632 )
-texture = ExtResource( 2 )
-
-[node name="Tween" type="Tween" parent="."]
-
-[node name="Timer" type="Timer" parent="."]
-
-[node name="RichTextLabel" type="RichTextLabel" parent="."]
-anchor_right = 1.0
-margin_bottom = 86.0
-custom_fonts/bold_font = ExtResource( 3 )
-custom_fonts/normal_font = ExtResource( 4 )
-bbcode_enabled = true
-bbcode_text = "
-[center]This scene is only for [b]BETA[/b] features testing. This scene and these features  does not represent the actual quality of the system.[/center] "
-text = "
-This scene is only for BETA features testing. This scene and these features  does not represent the actual quality of the system. "
-scroll_active = false
-
-[node name="RichTextLabel2" type="RichTextLabel" parent="."]
+[node name="Label" type="Label" parent="."]
 anchor_left = 0.5
-anchor_top = 1.0
+anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 1.0
-margin_left = -489.0
-margin_top = -67.0
-margin_right = 489.0
-custom_fonts/bold_font = ExtResource( 3 )
-custom_fonts/normal_font = ExtResource( 4 )
-bbcode_enabled = true
-bbcode_text = "Use the [b]arrow keys[/b] to test the transition of the images, the [b]return[/b] and the [b]escape[/b] to switch between active character and the [b]tab[/b] key to test the shake feature."
-text = "Use the arrow keys to test the transition of the images, the return and the escape to switch between active character and the tab key to test the shake feature."
-scroll_active = false
+anchor_bottom = 0.5
+margin_left = -512.0
+margin_top = -11.5
+margin_right = 512.0
+margin_bottom = 11.5
+text = "HERE BE DRAGONS"
+align = 1
+valign = 1
 

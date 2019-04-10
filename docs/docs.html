@@ -1,29 +1,29 @@
 <html>
 	<head>
         <title>Godot Open Dialogue - DOCS</title>
-        <meta author="J. Sena" version="1.1">
+        <meta author="J. Sena" version="1.2">
 		<link rel="stylesheet" href="style.css">
 	</head>
 
-	<body>				
-		
+	<body>
+
         <h1><img src="logo_transparent.png" class="logo">Godot Open Dialogue</h1>
         <h2>About</h2>
         <h3>The project</h3>
         <span>The Godot Open Dialogue is a non-linear conversation system created by <a href="https://jsena42.bitbucket.io/" target="_blank">J. Sena</a> and released as <accent>CC-BY</accent>.
-        The current version of the system requires the <accent><a href="https://godotengine.org/article/dev-snapshot-godot-3-1-beta-1" target="_blank">3.1 beta 1</a></accent> (or newer) version of the <accent><a href="https://godotengine.org" target="_blank">Godot Engine</a></accent>. You can change the code to make it work on previous versions but things may not work as they should.</span>
-        
+        The current version of the system requires the <accent><a href="https://godotengine.org/article/godot-3-1-released" target="_blank">3.1</a></accent> (or newer) version of the <accent><a href="https://godotengine.org" target="_blank">Godot Engine</a></accent>. You can change the code to make it work on previous versions but things may not work as they should.</span>
+
         <h3>The license</h3>
         <span>I put a lot of time and effort on this project to make sure it is bug free (as much as possible), easy to use and fits the needs of most projects. By releasing it under the <accent>CC-BY</accent> license I <b>don't</b> intend to have my name included in the credits of your game (it would be awesome if you do but you <i>don't</i> have to). Just make sure to credit me if you <b>share</b> the code of your project (<i>i.e. game jam projects</i>).
 
         Feel free to <a href="https://twitter.com/jsena42" target="_blank">get in touch</a> to tell me you're using my script on a project. It will greatly help me to keep myself motivated and release new versions.</span>
-        
+
         <h2>The block types</h2>
         <span>In order to define the various possible behaviors during a conversation the system has a few sets of parameters called <accents>blocks</accents>. Each block has its own ways to be customized and connected to other blocks in order to create a rich dialogue experience.
-        
+
         You can see below the block types and the way they can be used.</span>
-        
-		<h3>1. <accent><i>text</i></accent></h3>
+
+		<h3>1. <accent><i>text</i></accent> <label class="update">updated</label></h3></h3>
         <span>The most common type of dialogue block probably will be the <i>text</i> one. This is the simplest way to print a string in the players screen.</span>
         <h4>The parameters</h4>
 		<table>
@@ -36,6 +36,26 @@
                 <td class="value">Here goes the <accent>string</accent> to be parsed and printed.</td>
             </tr>
             <tr>
+                <td class="parameter optional">avatar</td>
+                <td class="value">Must be a <accent>string</accent> with the avatar's relative path to the <accent>"/img/characters/"</accent> folder.</td>
+            </tr>
+            <tr>
+                <td class="parameter optional">name</td>
+                <td class="value">Must be a <accent>string</accent> with the characters name.</td>
+            </tr>
+            <tr>
+                <td class="parameter optional">position</td>
+                <td class="value">Must be set to <accent>"left"</accent> or <accent>"right"</accent> to indicate where the player's avatar and name will appear.</td>
+            </tr>
+            <tr>
+                <td class="parameter optional">animation_in</td>
+                <td class="value">Must be a <accent>string</accent> with the animation to be played at the beginning of the block's execution. Current available animations are <accent>"shake_weak_short"</accent>, <accent>"shake_weak_medium"</accent>, <accent>"shake_weak_long"</accent>, <accent>"shake_regular_short"</accent>, <accent>"shake_regular_medium"</accent>, <accent>"shake_regular_long"</accent>, <accent>"shake_strong_short"</accent>, <accent>"shake_strong_medium"</accent>, <accent>"shake_strong_long"</accent>, <accent>"fade_in"</accent>, <accent>"fade_out"</accent> (doesn't make any sense in this case but can be used), <accent>"move_in"</accent>, <accent>"move_out"</accent> (again, can be used regardless of making any sense), <accent>"on"</accent>, <accent>"off"</accent> (you know...).</td>
+            </tr>
+            <tr>
+                <td class="parameter optional">animation_out</td>
+                <td class="value">Must be a <accent>string</accent> with the animation to be played at the end of the block's execution. Current available animations are <accent>"shake_weak_short"</accent>, <accent>"shake_weak_medium"</accent>, <accent>"shake_weak_long"</accent>, <accent>"shake_regular_short"</accent>, <accent>"shake_regular_medium"</accent>, <accent>"shake_regular_long"</accent>, <accent>"shake_strong_short"</accent>, <accent>"shake_strong_medium"</accent>, <accent>"shake_strong_long"</accent>, <accent>"fade_in"</accent>, <accent>"fade_out"</accent>, <accent>"move_in"</accent>, <accent>"move_out"</accent>, <accent>"on"</accent>, <accent>"off"</accent>.</td>
+            </tr>
+            <tr>
                 <td class="parameter optional">next</td>
                 <td class="value">You can set the name of the next dialogue block. If the current block doesn't have a <accent>"next"</accent> parameter it will be the last dialogue block to be shown.</td>
             </tr>
@@ -43,12 +63,17 @@
 		<p>Code example:</p>
 		<code><syntax-a>"block_name"</syntax-a>: {
         <spc/><syntax-b>"type"</syntax-b>: <syntax-c>"text"</syntax-c>,
+        <spc/><syntax-b>"name"</syntax-b>: <syntax-c>"Jimmy"</syntax-c>,
+        <spc/><syntax-b>"avatar"</syntax-b>: <syntax-c>"jimmy/01.png"</syntax-c>,
+        <spc/><syntax-b>"position"</syntax-b>: <syntax-c>"left"</syntax-c>,
+        <spc/><syntax-b>"animation_in"</syntax-b>: <syntax-c>"shake_weak_short"</syntax-c>,
+        <spc/><syntax-b>"animation_out"</syntax-b>: <syntax-c>"off"</syntax-c>,
         <spc/><syntax-b>"content"</syntax-b>: <syntax-c>"This string will be parsed and printed"</syntax-c>,
         <spc/><syntax-b>"next"</syntax-b>: <syntax-c>"next_block_name"</syntax-c>
         }
 		</code>
-        
-		<h3>2. <accent><i>divert</i> </accent><label class="update">updated</label></h3>
+
+		<h3>2. <accent><i>divert</i></h3>
         <span>This type can be used when you want to show certain blocks based on conditions.</span>
         <h4>The parameters</h4>
 		<table>
@@ -93,7 +118,7 @@
         <spc/><syntax-b>"false"</syntax-b>: <syntax-c>"block_name_if_false"</syntax-c>
         }
         </code>
-        
+
         <p>Code example for <accent>"equal"</accent>:</p>
         <code><syntax-a>"block_name"</syntax-a>: {
         <spc/><syntax-b>"type"</syntax-b>: <syntax-c>"divert"</syntax-c>,
@@ -129,7 +154,7 @@
         <spc/><syntax-b>"false"</syntax-b>: <syntax-c>"block_name_if_false"</syntax-c>
         }
         </code>
-        
+
 
         <p>Code example for <accent>"range"</accent>:</p>
         <code><syntax-a>"block_name"</syntax-a>: {
@@ -142,7 +167,7 @@
         <spc/><syntax-b>"false"</syntax-b>: <syntax-c>"block_name_if_false"</syntax-c>
         }
         </code>
-		<h3>3. <accent><i>question</i></accent></h3>
+		<h3>3. <accent><i>question</i></accent> <label class="update">updated</label></h3></h3>
         <span>This type allows you to have a question with multiple options for the player to choose. Based on the answer you can call another block of any type.</span>
         <h4>The parameters</h4>
 		<table>
@@ -159,6 +184,26 @@
                 <td class="value">Here goes an <accent>array</accent> of <accent>strings</accent> to be displayed as choices. You can use as many options as you like.</td>
             </tr>
             <tr>
+                <td class="parameter optional">avatar</td>
+                <td class="value">Must be a <accent>string</accent> with the avatar's relative path to the <accent>"/img/characters/"</accent> folder.</td>
+            </tr>
+            <tr>
+                <td class="parameter optional">name</td>
+                <td class="value">Must be a <accent>string</accent> with the characters name.</td>
+            </tr>
+            <tr>
+                <td class="parameter optional">position</td>
+                <td class="value">Must be set to <accent>"left"</accent> or <accent>"right"</accent> to indicate where the player's avatar and name will appear.</td>
+            </tr>
+            <tr>
+                <td class="parameter optional">animation_in</td>
+                <td class="value">Must be a <accent>string</accent> with the animation to be played at the beginning of the block's execution. Current available animations are <accent>"shake_weak_short"</accent>, <accent>"shake_weak_medium"</accent>, <accent>"shake_weak_long"</accent>, <accent>"shake_regular_short"</accent>, <accent>"shake_regular_medium"</accent>, <accent>"shake_regular_long"</accent>, <accent>"shake_strong_short"</accent>, <accent>"shake_strong_medium"</accent>, <accent>"shake_strong_long"</accent>, <accent>"fade_in"</accent>, <accent>"fade_out"</accent> (doesn't make any sense in this case but can be used), <accent>"move_in"</accent>, <accent>"move_out"</accent> (again, can be used regardless of making any sense), <accent>"on"</accent>, <accent>"off"</accent> (you know...).</td>
+            </tr>
+            <tr>
+                <td class="parameter optional">animation_out</td>
+                <td class="value">Must be a <accent>string</accent> with the animation to be played at the end of the block's execution. Current available animations are <accent>"shake_weak_short"</accent>, <accent>"shake_weak_medium"</accent>, <accent>"shake_weak_long"</accent>, <accent>"shake_regular_short"</accent>, <accent>"shake_regular_medium"</accent>, <accent>"shake_regular_long"</accent>, <accent>"shake_strong_short"</accent>, <accent>"shake_strong_medium"</accent>, <accent>"shake_strong_long"</accent>, <accent>"fade_in"</accent>, <accent>"fade_out"</accent>, <accent>"move_in"</accent>, <accent>"move_out"</accent>, <accent>"on"</accent>, <accent>"off"</accent>.</td>
+            </tr>
+            <tr>
                 <td class="parameter">next</td>
                 <td class="value">Here goes an <accent>array</accent> of <accent>strings</accent> with the names of the blocks to show based on the player's answer.
                  <b>Important:</b> This array must have the same size of <accent>"options"</accent>.
@@ -168,12 +213,17 @@
 		<p>Code example:</p>
 		<code><syntax-a>"block_name"</syntax-a>: {
         <spc/><syntax-b>"type"</syntax-b>: <syntax-c>"question"</syntax-c>,
+        <spc/><syntax-b>"name"</syntax-b>: <syntax-c>"Jimmy"</syntax-c>,
+        <spc/><syntax-b>"avatar"</syntax-b>: <syntax-c>"jimmy/01.png"</syntax-c>,
+        <spc/><syntax-b>"position"</syntax-b>: <syntax-c>"left"</syntax-c>,
+        <spc/><syntax-b>"animation_in"</syntax-b>: <syntax-c>"shake_weak_short"</syntax-c>,
+        <spc/><syntax-b>"animation_out"</syntax-b>: <syntax-c>"off"</syntax-c>,
         <spc/><syntax-b>"text"</syntax-b>: <syntax-c>"String to be parsed and printed."</syntax-c>,
         <spc/><syntax-b>"options"</syntax-b>: <syntax-c>["Text for option 1", "Text for option 2"]</syntax-c>,
         <spc/><syntax-b>"next"</syntax-b>: <syntax-c>["block_for_option_1", "block_for_option_2"]</syntax-c>
         }
 		</code>
-        
+
 		<h3>4. <accent><i>action</i></accent> <label class="update">updated</label></h3>
         <span>This type allows you to perform an action without having to print anything.</span>
         <h4>The parameters</h4>
@@ -201,6 +251,30 @@
                 </td>
             </tr>
             <tr>
+                <td class="parameter optional">avatar</td>
+                <td class="value">Must be a <accent>string</accent> with the avatar's relative path to the <accent>"/img/characters/"</accent> folder.
+									<b>Important:</b> This will not have any effect if you choose to perform the <accent>"random"</accent> operation.</td>
+            </tr>
+            <tr>
+                <td class="parameter optional">name</td>
+                <td class="value">Must be a <accent>string</accent> with the characters name.
+									<b>Important:</b> This will not have any effect if you choose to perform the <accent>"random"</accent> operation.</td>
+            <tr>
+                <td class="parameter optional">position</td>
+                <td class="value">Must be set to <accent>"left"</accent> or <accent>"right"</accent> to indicate where the player's avatar and name will appear.
+									<b>Important:</b> This will not have any effect if you choose to perform the <accent>"random"</accent> operation.</td>
+            </tr>
+            <tr>
+                <td class="parameter optional">animation_in</td>
+                <td class="value">Must be a <accent>string</accent> with the animation to be played at the beginning of the block's execution. Current available animations are <accent>"shake_weak_short"</accent>, <accent>"shake_weak_medium"</accent>, <accent>"shake_weak_long"</accent>, <accent>"shake_regular_short"</accent>, <accent>"shake_regular_medium"</accent>, <accent>"shake_regular_long"</accent>, <accent>"shake_strong_short"</accent>, <accent>"shake_strong_medium"</accent>, <accent>"shake_strong_long"</accent>, <accent>"fade_in"</accent>, <accent>"fade_out"</accent> (doesn't make any sense in this case but can be used), <accent>"move_in"</accent>, <accent>"move_out"</accent> (again, can be used regardless of making any sense), <accent>"on"</accent>, <accent>"off"</accent> (you know...).
+								<b>Important:</b> This will not have any effect if you choose to perform the <accent>"random"</accent> operation.</td>
+            </tr>
+            <tr>
+                <td class="parameter optional">animation_out</td>
+                <td class="value">Must be a <accent>string</accent> with the animation to be played at the end of the block's execution. Current available animations are <accent>"shake_weak_short"</accent>, <accent>"shake_weak_medium"</accent>, <accent>"shake_weak_long"</accent>, <accent>"shake_regular_short"</accent>, <accent>"shake_regular_medium"</accent>, <accent>"shake_regular_long"</accent>, <accent>"shake_strong_short"</accent>, <accent>"shake_strong_medium"</accent>, <accent>"shake_strong_long"</accent>, <accent>"fade_in"</accent>, <accent>"fade_out"</accent>, <accent>"move_in"</accent>, <accent>"move_out"</accent>, <accent>"on"</accent>, <accent>"off"</accent>.
+								<b>Important:</b> This will not have any effect if you choose to perform the <accent>"random"</accent> operation.</td>
+            </tr>
+            <tr>
                 <td class="parameter optional">next</td>
                 <td class="value">You can set the name of the next dialogue block. If the current block doesn't have a <accent>"next"</accent> parameter it will be the last dialogue block to be shown.
                 <b>Important:</b> This will not have any effect if you choose to perform the <accent>"random"</accent> operation.</td>
@@ -225,7 +299,7 @@
         <spc/><syntax-b>"value"</syntax-b>: <syntax-c>["block_name_1", "block_name_2", "block_name_3"]</syntax-c>
         }
 		</code>
-        
+
         <br/>
         <h2>F.A.Q.</h2>
         <h3>Can I use <accent>bbcode</accent>?</h3>
@@ -246,13 +320,13 @@
         <span>I actually don't have a classic roadmap for this project. I have several features in mind but they will only be implemented if they match these conditions: <br/><br/></span>
         <ul>
             <li>Be possible to implement without needing to rewrite the core functionalities of Godot (i.e. <i>shaking</i> text will not be available since it is not possible using the <accent>RichTextLabel</accent> node);</li><br/>
-            
+
             <li>Be useful for many types of games (I will not spend time trying to make a specific functionality to be used only for two or three developers).</li><br/>
 
         </ul>
 
         <h3>Is this project still being developed?</h3>
-        <span>If you are reading the <accent><a href="https://jsena42.bitbucket.io/god" target="_blank">online</a></accent> version of this page, the answer is <b>yes</b>.</span> 
+        <span>If you are reading the <accent><a href="https://jsena42.bitbucket.io/god/docs" target="_blank">online</a></accent> version of this page, the answer is <b>yes</b>.</span>
 
 
         <h3>When the next version is going to be released?</h3>
@@ -270,6 +344,22 @@
 
 
         <h2>Changelog</h2>
+        <h4 class="release"><label class="update">v1.2</label>May 10th, 2019</h4>
+            <ul>
+								<accent>Added:</accent>
+								<li>Project now supports <accent>avatars</accent> and <accent>names</accent></li>
+								<li><accent>Avatars</accent> have animations (using the <accent>"Tween"</accent> node) to be played at the beginning and at the end of each block</li>
+
+                <br/><accent>Updated:</accent>
+								<li>Project updated to <a href="https://godotengine.org/article/godot-3-1-released" target="_blank">Godot 3.1</a></li>
+                <li><accent>"Main.tscn"</accent> scene updated for better UX</li>
+                <li><accent>initiate()</accent> function now has an <accent>optional</accent> second parameter that can be used to start the dialogue from a specific block</li>
+
+                <br/><accent>Fixed:</accent>
+								<li>So many small execution bugs</li>
+                <li><accent>"first"</accent> block can be any type now without any problem
+                <li><accent>ContinueIndicator</accent> doesn't stay on screen anymore if the last block called was a <accent>"action"</accent> one
+            </ul>
         <h4 class="release"><label class="update">v1.1</label>Jan 14th, 2019</h4>
             <ul>
                 <accent>Added:</accent>
@@ -278,29 +368,29 @@
                 <li><accent>"equal"</accent>, <accent>"greater"</accent>, <accent>"less"</accent> and <accent>"range"</accent> operations added to the block type <accent>"divert"</accent></li>
                 <li><accent>"AnimationPlayer"</accent> added to the <accent>"Dialogue.tscn"</accent> scene</li>
                 <li><accent>"ContinueIndicator"</accent> added to the <accent>"Dialogue.tscn"</accent> scene</li>
-                <li>Dialog frame size can be set changing the <accent>"frame_width"</accent> and <accent>"frame_height"</accent> variables</li>
-                <li>Dialog frame vertical aligment can be set changing the <accent>"frame_position"</accent> variable</li>
-                <li>Dialog frame vertical margin can be set changing the <accent>"frame_margin_vertical"</accent> variable</li>
+                <li>Dialogue frame size can be set changing the <accent>"frame_width"</accent> and <accent>"frame_height"</accent> variables</li>
+                <li>Dialogue frame vertical aligment can be set changing the <accent>"frame_position"</accent> variable</li>
+                <li>Dialogue frame vertical margin can be set changing the <accent>"frame_margin_vertical"</accent> variable</li>
                 <li>Label margin can be set changing the <accent>"label_margin"</accent> variable</li>
                 <li>Choices vertical margin can be set changing the <accent>"choices_margin_vertical"</accent> variable</li>
                 <li>Choices horizontal margin can be set changing the <accent>"choices_margin_horizontal"</accent> variable</li>
                 <li>Choices horizontal text alignment can be set changing the <accent>"choices_text_alignment"</accent> variable</li>
                 <li><accent>"Choices"</accent> horizontal node alignment can be set changing the <accent>"choices_node_alignment"</accent> variable</li>
-                <li><accent>"BetaStuff.tscn"</accent> scene and <accent>"beta_stuff.gd"</accent> script added to test upcoming features without affect the stable ones</li> 
-                
+                <li><accent>"BetaStuff.tscn"</accent> scene and <accent>"beta_stuff.gd"</accent> script added to test upcoming features without affect the stable ones</li>
+
                 <br/><accent>Updated:</accent>
-                <li>Project update to <accent><a href="https://godotengine.org/article/dev-snapshot-godot-3-1-beta-1" target="_blank">Godot 3.1 beta 1</a></accent></li>
+                <li>Project updated to <accent><a href="https://godotengine.org/article/dev-snapshot-godot-3-1-beta-1" target="_blank">Godot 3.1 beta 1</a></accent></li>
                 <li>The whole project file structure has been updated for better consistency and ease of use</li>
                 <li>All the <accent>signals</accent> are now connect via <accent>GDScript</accent> for better customization</li>
                 <li>Dialogue examples cleaned and updated</li>
                 <li><accent>"variable"</accent> condition renamed to <accent>"boolean"</accent> in the <accent>"action"</accent> block type</li>
-                <li>Choices now are aligned to the bottom right corner of the dialog frame by default</li>
+                <li>Choices now are aligned to the bottom right corner of the dialogue frame by default</li>
                 <li>If typewriter effect is active all choices are now grey by default until the question is completely displayed</li>
                 <li>All operations using <accent>variables</accent> must specify a <accent>dictionary</accent></li>
-                
+
                 <br/><accent>Fixed:</accent>
                 <li>Using multiple lines now works properly. Just use <accent>@</accent> instead of <accent>\n</accent></li>
-                
+
                 <br/><accent>Removed:</accent>
                 <li><accent>"Position2D"</accent> removed from <accent>"Choices"</accent> node in <accent>"Dialogue.tscn"</accent> scene</li>
             </ul>
@@ -314,4 +404,3 @@
         </footer>
 	</body>
 </html>
-

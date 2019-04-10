@@ -4,5 +4,6 @@
 
 [resource]
 
+size = 13
 font_data = ExtResource( 1 )
 

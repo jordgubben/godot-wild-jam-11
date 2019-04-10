@@ -17,16 +17,16 @@ _global_script_class_icons={
 
 config/name="Godot Open Dialogue"
 run/main_scene="res://Main.tscn"
+boot_splash/image="res://img/ui/splash_screen.png"
 config/icon="res://icon.png"
 
 [autoload]
 
 PROGRESS="*res://progress.gd"
 
-[display]
+[gui]
 
-window/stretch/mode="2d"
-window/stretch/aspect="keep"
+theme/custom_font="res://fonts/adobe_source_san_pro_ttf/godot_font_format/source_sans_pro_regular_16.tres"
 
 [rendering]
 
