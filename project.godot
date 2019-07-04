@@ -18,6 +18,10 @@ _global_script_class_icons={
 config/name="Godot Wild Jam 11"
 config/icon="res://icon.png"
 
+[editor_plugins]
+
+enabled=PoolStringArray( "gut" )
+
 [rendering]
 
 quality/driver/driver_name="GLES2"
