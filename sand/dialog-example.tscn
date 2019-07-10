@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://dialog/DialogPlayer.tscn" type="PackedScene" id=1]
+
+[node name="dialog-example" type="Node2D"]
+
+[node name="dialog" parent="." instance=ExtResource( 1 )]
+margin_right = 1024.0
+margin_bottom = 600.0
