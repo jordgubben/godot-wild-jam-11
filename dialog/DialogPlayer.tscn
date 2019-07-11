@@ -40,3 +40,15 @@ margin_top = 10.0
 margin_right = -20.0
 margin_bottom = -10.0
 text = "Lorem ipsum dolar is amet."
+
+[node name="ok" type="Button" parent="speach-panel"]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -75.0
+margin_top = -30.0
+margin_right = -10.0
+margin_bottom = -10.0
+text = "Next.."
+[connection signal="pressed" from="speach-panel/ok" to="." method="_on_ok_pressed"]

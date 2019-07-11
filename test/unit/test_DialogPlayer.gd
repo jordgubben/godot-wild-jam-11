@@ -16,23 +16,56 @@ func test_displaying_first_line():
 	# When adding to tree
 	instance._ready()
 
-	# Then only the line from the first spoken line
+	# Then the line from the first spoken line
 	# is displayed in the GUI
 	assert_eq(
-		line.text,
-		instance.get_node("speach-panel/text").text)
+		instance.get_node("speach-panel/text").text,
+		line.text)
 
+func test_show_next():
+	# Given the first and second node
+	# are both SpokenLine(s) with some text
+	var line_1 = SpokenLine.new()
+	line_1.text = "Some text 1"
+	instance.add_child(line_1)
 
-func test_filter_out_lines():
+	var line_2 = SpokenLine.new()
+	line_2.text = "Some text 2"
+	instance.add_child(line_2)
+
+	# When adding to tree
+	instance._ready()
+
+	# And then moving to the next
+	instance.show_next()
+
+	# Then the line from the second spoken line
+	# is displayed in the GUI
+	assert_eq(
+		instance.get_node("speach-panel/text").text,
+		line_2.text)
+
+func test_reaching_end_emmits_signal():
 	# Given the first node is a SpokenLine
-	var line = SpokenLine.new()
-	instance.add_child(line)
+	instance.add_child(SpokenLine.new())
 
-	# And the second line is something unrelated
-	instance.add_child(Sprite.new())
+	# And a listener is connected
+	var catcher = Catcher.new()
+	instance.connect("completed", catcher, "catch_0")
 
-	# When filtering out lines
-	var lines = instance.filter_out_lines()
+	# When reaching the end
+	instance._ready()
+	instance.show_next()
 
-	# Then only the SpokenLine is returend
-	assert_eq(lines, [line])
+	# Then the listener has recieved a signal
+	assert_eq(
+		catcher.caught,
+		[])
+
+
+class Catcher:
+	var called = false
+	var caught = null
+	func catch_0():
+		called = true
+		caught = []
