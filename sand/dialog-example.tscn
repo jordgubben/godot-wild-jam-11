@@ -1,9 +1,20 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://dialog/DialogPlayer.tscn" type="PackedScene" id=1]
+[ext_resource path="res://dialog/SpokenLine.gd" type="Script" id=2]
 
 [node name="dialog-example" type="Node2D"]
 
 [node name="dialog" parent="." instance=ExtResource( 1 )]
 margin_right = 1024.0
 margin_bottom = 600.0
+
+[node name="line-1" type="Node" parent="dialog"]
+script = ExtResource( 2 )
+text = "Lorem ipsum from the first line. :D"
+
+[node name="line-2" type="Node" parent="dialog"]
+script = ExtResource( 2 )
+text = "Dolar is amet from  from the second line. :D"
+
+[node name="not-a-line-1" type="Node" parent="dialog"]
