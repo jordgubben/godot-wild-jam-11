@@ -2,6 +2,7 @@
   "first": {
     "type": "text",
     "content": "Hi.| Take a seat. Eat some cake. Drink some juice.",
+    "animation_in": "shake_regular_long",
     "next": "block_random"
   },
   "repeat": {

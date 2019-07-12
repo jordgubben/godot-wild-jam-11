@@ -24,6 +24,11 @@ config/icon="res://icon.png"
 
 PROGRESS="*res://progress.gd"
 
+[display]
+
+window/size/width=900
+window/size/resizable=false
+
 [gui]
 
 theme/custom_font="res://fonts/adobe_source_san_pro_ttf/godot_font_format/source_sans_pro_regular_16.tres"
