@@ -142,7 +142,7 @@ func update_dialogue(step): # step == whole dialogue block
   # Check if this step requires a new image
   var img_name = step.get('image')
   if img_name != null and img_name != current_img_name:
-    load_image($"../../CenterContainer/Sprite", img_name)
+    change_image(img_name)
   
   clean()
   current = step
@@ -327,9 +327,11 @@ func next():
       pass
     update_dialogue(dialogue[next_step])
 
-func load_image(sprite, image):
-  sprite.texture = load('%s/%s' % [locations_folder, image + "." + locations_image_format])
-
+func change_image(img_name):
+  if img_name != current_img_name:
+    current_img_name = img_name
+    var fade_animator = $"../../CenterContainer/Overlay/AnimationPlayer"
+    fade_animator.play("fade_black")
 
 func question(text, options, next):
   check_pauses(label.get_text())
@@ -379,22 +381,6 @@ func change_choice(dir):
           choices.get_child(current_choice).self_modulate = inactive_choice
           current_choice = current_choice + 1 if current_choice < number_choices else 0
           choices.get_child(current_choice).self_modulate = active_choice
-    
-#				# NOT LOOPING
-#				'previous': # Not looping
-#					if current_choice == 0:
-#						pass
-#					else:
-#						choices.get_child(current_choice).self_modulate = inactive_choice
-#						current_choice = current_choice - 1
-#						choices.get_child(current_choice).self_modulate = active_choice
-#				'next':
-#					if current_choice == number_choices:
-#						pass
-#					else:
-#						choices.get_child(current_choice).self_modulate = inactive_choice
-#						current_choice = current_choice + 1
-#						choices.get_child(current_choice).self_modulate = active_choice
     
       next_step = current['next'][current_choice]
 
@@ -449,3 +435,17 @@ func update_pause():
   paused = false
   timer.wait_time = wait_time
   timer.start()
+
+func _on_AnimationPlayer_animation_started(anim_name):
+  pass
+  
+func _on_AnimationPlayer_animation_finished(anim_name):
+  var fade_animator = $"../../CenterContainer/Overlay/AnimationPlayer"
+  var image = $"../../CenterContainer/Sprite"
+  if anim_name == "fade_black":
+    image.texture = load('%s/%s' % [locations_folder, current_img_name + "." + locations_image_format])
+    fade_animator.play("black_0.3")
+  elif anim_name == "black_0.3":
+    fade_animator.play("fade_light")
+  else:
+    fade_animator.stop()

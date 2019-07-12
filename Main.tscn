@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://Theme.tres" type="Theme" id=1]
 [ext_resource path="res://ui.gd" type="Script" id=2]
@@ -7,6 +7,58 @@
 [ext_resource path="res://fonts/adobe_source_san_pro_ttf/godot_font_format/source_sans_pro_regular_16.tres" type="DynamicFont" id=5]
 [ext_resource path="res://fonts/adobe_source_san_pro_ttf/godot_font_format/source_sans_pro_bold_16.tres" type="DynamicFont" id=6]
 [ext_resource path="res://img/locations/test_location.png" type="Texture" id=7]
+[ext_resource path="res://transition.shader" type="Shader" id=8]
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = ExtResource( 8 )
+shader_param/darkness = 1.0
+
+[sub_resource type="Animation" id=5]
+resource_name = "black_0.3"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:material:shader_param/darkness")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 1.0 ]
+}
+
+[sub_resource type="Animation" id=3]
+resource_name = "fade_black"
+step = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:material:shader_param/darkness")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1.86607, 1.86607 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
+}
+
+[sub_resource type="Animation" id=4]
+resource_name = "fade_light"
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:material:shader_param/darkness")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.3, 0.7, 1 ),
+"transitions": PoolRealArray( 1.6245, 1, 0.637281, 1 ),
+"update": 0,
+"values": [ 1.0, 0.75, 0.25, 0.0 ]
+}
 
 [node name="Main" type="Control"]
 margin_right = 900.0
@@ -266,3 +318,18 @@ texture = ExtResource( 7 )
 centered = false
 region_rect = Rect2( 0, 0, 600, 600 )
 
+[node name="Overlay" type="ColorRect" parent="UI/CenterContainer"]
+material = SubResource( 2 )
+margin_right = 600.0
+margin_bottom = 600.0
+rect_min_size = Vector2( 600, 600 )
+color = Color( 0, 0, 0, 1 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="UI/CenterContainer/Overlay"]
+pause_mode = 1
+anims/black_0.3 = SubResource( 5 )
+anims/fade_black = SubResource( 3 )
+anims/fade_light = SubResource( 4 )
+
+[connection signal="animation_finished" from="UI/CenterContainer/Overlay/AnimationPlayer" to="UI/Sidebar/Dialogue" method="_on_AnimationPlayer_animation_finished"]
+[connection signal="animation_started" from="UI/CenterContainer/Overlay/AnimationPlayer" to="UI/Sidebar/Dialogue" method="_on_AnimationPlayer_animation_started"]
