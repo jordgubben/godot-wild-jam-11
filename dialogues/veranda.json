@@ -1,0 +1,39 @@
+{
+  "first": {
+    "type": "text",
+    "content": "After a long journey you find yourself on the front lawn of your grandmother's old house. You are overcome with memories of your childhood, when your parents took you here for the summer holidays.@You spent years exploring the house with your cousins, but there always seemed to be something new to discover.",
+    "next": "question_block"
+  },
+  "repeat": {
+    "type": "text",
+    "content": "Back at the front door again.",
+    "next": "question_block"
+  },
+  "question_block": {
+    "type": "question",
+    "text": "You walk up the stairs to the front door. Grandmother always left the door open, but when you try to enter it turns out to be locked. There is something eerie about this place now, you cannot explain why but you have a strong sense of unease as you approach the door.",
+    "options": ["Walk away and never look back.", "Try to pick the lock.", "Ring the bell."],
+    "next": ["chose_option_1", "chose_option_2", "chose_option_3"]
+  },
+  "chose_option_1": {
+    "type": "action",
+    "operation": "variable",
+    "dictionary": "variables",
+    "text": "You live happily ever after.",
+    "value": [["question", "1"]]
+  },
+  "chose_option_2": {
+    "type": "action",
+    "operation": "variable",
+    "dictionary": "variables",
+    "text": "It is an old lock and after several minutes it opens with a satisfying click. You enter the house.",
+    "value": [["question", "2"]]
+  },
+  "chose_option_3": {
+    "type": "action",
+    "operation": "variable",
+    "dictionary": "variables",
+    "text": "There is a bronze bell hanging to the right of the door. You ring it and wait for several minutes, but there is no response.",
+    "value": [["question", "3"]]
+  }
+}

@@ -9,7 +9,9 @@ func _ready():
   $CenterContainer/HBoxContainer/VBoxContainer/InitiateC.connect('pressed', self, 'init_c')
   $CenterContainer/HBoxContainer/Variables/VBoxContainer/Clear.connect('pressed', self, 'clear')
   $CenterContainer/HBoxContainer/Variables/VBoxContainer/SetVars.connect('pressed', self, 'set_vars')
-  pass
+  
+  
+  play_dialogue('veranda')
 
 func _physics_process(delta): # Just to update the Variables label
   var text = 'Variables: \n' + str(PROGRESS.variables) + '\n \n Dialogues: \n' + str(PROGRESS.dialogues)
@@ -19,6 +21,8 @@ func _physics_process(delta): # Just to update the Variables label
 func press_next():
   dialogue.next()
 
+func play_dialogue(dialogue_id):
+  dialogue.initiate(dialogue_id)
 
 func init_a():
   dialogue.initiate('avatars')

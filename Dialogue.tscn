@@ -1,11 +1,10 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://dialogue_system.gd" type="Script" id=1]
-[ext_resource path="res://img/characters/jimmy/01.png" type="Texture" id=2]
-[ext_resource path="res://fonts/adobe_source_san_pro_ttf/godot_font_format/source_sans_pro_bold_italic_16.tres" type="DynamicFont" id=3]
-[ext_resource path="res://fonts/adobe_source_san_pro_ttf/godot_font_format/source_sans_pro_italic_16.tres" type="DynamicFont" id=4]
-[ext_resource path="res://fonts/adobe_source_san_pro_ttf/godot_font_format/source_sans_pro_bold_16.tres" type="DynamicFont" id=5]
-[ext_resource path="res://fonts/adobe_source_san_pro_ttf/godot_font_format/source_sans_pro_regular_16.tres" type="DynamicFont" id=6]
+[ext_resource path="res://fonts/adobe_source_san_pro_ttf/godot_font_format/source_sans_pro_bold_italic_16.tres" type="DynamicFont" id=2]
+[ext_resource path="res://fonts/adobe_source_san_pro_ttf/godot_font_format/source_sans_pro_italic_16.tres" type="DynamicFont" id=3]
+[ext_resource path="res://fonts/adobe_source_san_pro_ttf/godot_font_format/source_sans_pro_bold_16.tres" type="DynamicFont" id=4]
+[ext_resource path="res://fonts/adobe_source_san_pro_ttf/godot_font_format/source_sans_pro_regular_16.tres" type="DynamicFont" id=5]
 
 [sub_resource type="Animation" id=1]
 loop = true
@@ -22,18 +21,10 @@ tracks/0/keys = {
 "values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
 }
 
-[sub_resource type="StyleBoxFlat" id=2]
-content_margin_left = 10.0
-content_margin_right = 10.0
-content_margin_bottom = 4.0
-bg_color = Color( 0.768627, 0, 0.258824, 1 )
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-
 [node name="Dialogue" type="Control"]
-editor/display_folded = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -600.0
 script = ExtResource( 1 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -46,31 +37,21 @@ anims/Continue_Indicator = SubResource( 1 )
 [node name="SpriteTimer" type="Timer" parent="."]
 one_shot = true
 
-[node name="SpriteLeft" type="Sprite" parent="."]
-texture = ExtResource( 2 )
-
-[node name="SpriteRight" type="Sprite" parent="."]
-texture = ExtResource( 2 )
-flip_h = true
-
 [node name="Frame" type="ColorRect" parent="."]
-size_flags_horizontal = 3
-size_flags_vertical = 3
+margin_right = 300.0
+margin_bottom = 300.0
+rect_min_size = Vector2( 300, 400 )
 color = Color( 0.175781, 0.175781, 0.175781, 1 )
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Frame"]
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -150.0
-margin_top = -50.0
-margin_right = 150.0
-margin_bottom = 50.0
-custom_fonts/bold_italics_font = ExtResource( 3 )
-custom_fonts/italics_font = ExtResource( 4 )
-custom_fonts/bold_font = ExtResource( 5 )
-custom_fonts/normal_font = ExtResource( 6 )
+margin_left = 25.0
+margin_top = 25.0
+margin_right = 275.0
+margin_bottom = 275.0
+custom_fonts/bold_italics_font = ExtResource( 2 )
+custom_fonts/italics_font = ExtResource( 3 )
+custom_fonts/bold_font = ExtResource( 4 )
+custom_fonts/normal_font = ExtResource( 5 )
 bbcode_enabled = true
 bbcode_text = "Empty text"
 text = "Empty text"
@@ -78,31 +59,12 @@ scroll_active = false
 
 [node name="Choices" type="Control" parent="Frame"]
 
-[node name="NameRight" type="Label" parent="Frame"]
-anchor_left = 1.0
-anchor_right = 1.0
-margin_left = -75.0
-margin_bottom = 25.0
-grow_horizontal = 0
-size_flags_horizontal = 9
-size_flags_vertical = 8
-custom_styles/normal = SubResource( 2 )
-custom_fonts/font = ExtResource( 5 )
-text = "Name 2"
-align = 2
-valign = 1
-
-[node name="NameLeft" type="Label" parent="Frame"]
-margin_right = 74.0
-margin_bottom = 25.0
-size_flags_horizontal = 15
-size_flags_vertical = 15
-custom_styles/normal = SubResource( 2 )
-custom_fonts/font = ExtResource( 5 )
-text = "Name 1"
-valign = 1
-
 [node name="ContinueIndicator" type="ColorRect" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
 margin_right = 10.0
 margin_bottom = 10.0
+rect_min_size = Vector2( 10, 10 )
 

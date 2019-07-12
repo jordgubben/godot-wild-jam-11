@@ -20,10 +20,6 @@ onready var choices : Node = $Frame/Choices # The container node for the choices
 onready var timer : Node = $Timer # Timer node.
 onready var continue_indicator : Node = $ContinueIndicator # Blinking square displayed when the text is all printed.
 onready var animations : Node = $AnimationPlayer
-onready var sprite_left : Node = $SpriteLeft # Used for showing the avatar on the dialogue
-onready var sprite_right : Node = $SpriteRight
-onready var name_left : Node = $Frame/NameLeft
-onready var name_right : Node = $Frame/NameRight
 ## Typewriter effect ##
 var wait_time : float = 0.02 # Time interval (in seconds) for the typewriter effect. Set to 0 to disable it. 
 var pause_time : float = 2.0 # Duration of each pause when the typewriter effect is active.
@@ -39,19 +35,20 @@ var choice_height : int = 20 # Choice label's height
 var choice_width : int = 250 # Choice label's width
 var choice_margin_vertical : int = 10 # Vertical space (in pixels) between the bottom border of the dialogue frame and the last question (affectd by the 'label_margin')
 var choice_margin_horizontal : int = 10 # Horizontal space (in pixels) between the border (set in 'choice_node_alignment') of the dialogue frame and the questions (affectd by the 'label_margin')
-var choice_text_alignment : String = 'right' # Alignment of the choice's text. Can be 'left' or 'right'
-var choice_node_alignment : String = 'right' # Alignment of the 'Choice' node. Can be 'left' or 'right'
-var previous_command : String = 'ui_up' # Input commmand for the navigating through question choices 
+var choice_text_alignment : String = 'left' # Alignment of the choice's text. Can be 'left' or 'right'
+var choice_node_alignment : String = 'left' # Alignment of the 'Choice' node. Can be 'left' or 'right'
+var previous_command : String = 'ui_up' # Input commmand for the navigating through question choices
 var next_command : String = 'ui_down' # Input commmand for the navigating through question choices
-var frame_height : int = 150 # Dialog frame height (in pixels)
-var frame_width : int = 900 # Dialog frame width (in pixels)
+var continue_dialogue : String = 'ui_continue'
+var frame_height : int = 325 # Dialog frame height (in pixels)
+var frame_width : int = 300 # Dialog frame width (in pixels)
 var frame_position : String = 'bottom' # Use to 'top' or 'bottom' to change the dialogue frame vertical alignment 
-var frame_margin_vertical : int = 10 # Vertical space (in pixels) between the dialogue box and the window border
+var frame_margin : int = 25 # Vertical space (in pixels) between the dialogue box and the window border
 var label_margin : int = 20 # Space (in pixels) between the dialogue frame border and the text
 var enable_continue_indicator : bool = true # Enable or disable the 'continue_indicator' animation when the text is completely displayed. If typewritter effect is disabled it will always be visible on every dialogue block.
 var sprite_offset : Vector2 = Vector2(30, 0) # Used for polishing avatars' position. Can use negative values.
 var name_offset : Vector2 = Vector2(-10, -15) # Offsets the name labels relative to the frame borders.
-var show_names : bool = true # Turn on and off the character name labels
+var show_names : bool = false # Turn on and off the character name labels
 # END OF SETUP #
 
 
@@ -113,8 +110,6 @@ var shake_short = 0.25
 var shake_medium = 0.5
 var shake_long = 2
 
-var on_animation : bool = false
-
 var avatar_left : String = ''
 var avatar_right : String = ''
 
@@ -124,59 +119,12 @@ func _ready():
   set_physics_process(true)
   timer.connect('timeout', self, '_on_Timer_timeout')
   sprite_timer.connect('timeout', self, '_on_Sprite_Timer_timeout')
-  set_frame()
 
 
 func _physics_process(delta):
   if shaking:
     sprite.offset = Vector2(rand_range(-1.0, 1.0) * shake_amount, rand_range(-1.0, 1.0) * shake_amount)
   pass
-
-
-func set_frame(): # Mostly aligment operations.
-#  match frame_position:
-#    'top':
-#      self.anchor_left = 0.5
-#      self.anchor_top = 0
-#      self.anchor_right = 0.5
-#      self.anchor_bottom = 0
-#      self.rect_position = Vector2(0, frame_margin_vertical)
-#    'bottom':
-#      print('bottom')
-#      self.anchor_left = 0.5
-#      self.anchor_top = 1
-#      self.anchor_right = 0.5
-#      self.anchor_bottom = 1
-#      self.rect_position = Vector2(0, -(frame_height + frame_margin_vertical))
-  
-  continue_indicator.anchor_left = 0.5
-  continue_indicator.anchor_top = 1
-  continue_indicator.anchor_right = 0.5
-  continue_indicator.anchor_bottom = 1
-  continue_indicator.rect_position = Vector2(-(continue_indicator.get_rect().size.x / 2) - label_margin,
-      frame_height - continue_indicator.get_rect().size.y - label_margin)
-  
-  frame.rect_size = Vector2(frame_width, frame_height)
-  frame.rect_position = Vector2(-frame_width/2, 0)
-  
-  label.rect_size = Vector2(frame_width - (label_margin * 2), frame_height - (label_margin * 2) )
-  label.rect_position = Vector2(label_margin, label_margin)
-  
-  frame.hide() # Hide the dialogue frame
-  continue_indicator.hide()
-  
-  sprite_left.modulate = white_transparent
-  sprite_right.modulate = white_transparent
-  
-  
-  name_left.hide()
-#	name_left.position = 'left'
-  name_left.rect_position.y = name_offset.y
-  
-  name_right.hide()
-#	name_right.position = 'right'
-  name_right.rect_position.y = name_offset.y
-
 
 func initiate(file_id, block = 'first'): # Load the whole dialogue into a variable
   id = file_id
@@ -231,8 +179,6 @@ func update_dialogue(step): # step == whole dialogue block
       check_newlines(phrase_raw)
       clean_bbcode(step['content'])
       number_characters = phrase_raw.length()
-      check_animation(step)
-      check_names(step)
       
       if step.has('next'):
         next_step = step['next']
@@ -290,8 +236,6 @@ func update_dialogue(step): # step == whole dialogue block
       question(step['text'], step['options'], step['next'])
       check_newlines(phrase_raw)
       clean_bbcode(step['text'])
-      check_animation(step)
-      check_names(step)
       number_characters = phrase_raw.length()
       next_step = step['next'][0]
       
@@ -315,8 +259,6 @@ func update_dialogue(step): # step == whole dialogue block
         check_newlines(phrase_raw)
         clean_bbcode(step['text'])
         number_characters = phrase_raw.length()
-        check_animation(step)
-        check_names(step)
       else:
         label.visible_characters = number_characters
         next()
@@ -386,8 +328,6 @@ func clean_bbcode(string):
 
 
 func next():
-  if not dialogue or on_animation: # Check if is in the middle of a dialogue 
-    return
   clean() # Be sure all the variables used before are restored to their default values.
   if wait_time > 0: # Check if the typewriter effect is active.
     if label.visible_characters < number_characters: # Checks if the phrase is complete.
@@ -397,18 +337,7 @@ func next():
     label.visible_characters = -1 # -1 tells the RichTextLabel to show all the characters.
   
   if next_step == '': # Doesn't have a 'next' block.
-    if current.has('animation_out'):
-      animate_sprite(current['position'], current['avatar'], current['animation_out'])
-      yield(tween, "tween_completed")
-    else:
-      sprite_left.modulate = white_transparent
-      sprite_right.modulate = white_transparent
     dialogue = null
-    name_left.hide()
-    name_right.hide()
-    frame.hide() 
-    avatar_left = ''
-    avatar_right = ''
   else:
     label.bbcode_text = ''
     if choices.get_child_count() > 0: # If has choices, remove them.
@@ -416,213 +345,7 @@ func next():
         choices.remove_child(n)
     else:
       pass
-    if current.has('animation_out'):
-      animate_sprite(current['position'], current['avatar'], current['animation_out'])
-      yield(tween, "tween_completed")
-    
     update_dialogue(dialogue[next_step])
-
-
-func check_names(block):
-  if not show_names:
-    return
-  if block.has('name'):
-    if block['position'] == 'left':
-      name_left.text = block['name']
-      yield(get_tree(), 'idle_frame')
-      name_left.rect_size.x = 0
-      name_left.rect_position.x += name_offset.x
-      name_left.set_process(true)
-      name_left.show()
-      name_right.hide()
-    else:
-      name_right.text = block['name']
-      
-      yield(get_tree(), 'idle_frame')
-      name_right.rect_size.x = 0
-      name_right.rect_position.x = frame_width - name_right.rect_size.x - name_offset.x
-      name_right.set_process(true)
-      name_right.show()
-      name_left.hide()
-  else:
-    pass
-
-
-func check_animation(block):
-  reset_sprites()
-  if block.has('avatar'):
-    if block.has('animation_in'):
-      animate_sprite(block['position'], block['avatar'], block['animation_in'])
-  else:
-    return
-
-
-func reset_sprites():
-  sprite_left.position = Vector2(-(frame_width - (sprite_left.get_rect().size.x / 2) - sprite_offset.x) / 2, -(frame_height + (sprite_left.get_rect().size.y / 2) - sprite_offset.y) / 2)
-  sprite_right.position = Vector2((frame_width - (sprite_right.get_rect().size.x / 2) - sprite_offset.x) / 2, -(frame_height + (sprite_left.get_rect().size.y / 2) - sprite_offset.y) / 2)
-
-
-func animate_sprite(direction, image, animation):
-  var current_pos
-  var move_vector
-  
-  if direction == 'left':
-    sprite = sprite_left
-    current_pos = sprite.position
-    
-    move_vector = Vector2(current_pos.x - move_distance, current_pos.y)
-  else:
-    sprite = sprite_right
-    current_pos = sprite.position
-    
-    move_vector = Vector2(current_pos.x + move_distance, current_pos.y)
-  
-  previous_pos = current_pos
-  
-  match animation:
-    
-    'shake_weak_short':
-      shake_amount = shake_weak
-      sprite_timer.wait_time = shake_short
-      sprite_timer.start()
-      on_animation = true
-      shaking = true
-      set_physics_process(true)
-      
-    'shake_weak_medium':
-      shake_amount = shake_weak
-      sprite_timer.wait_time = shake_medium
-      sprite_timer.start()
-      on_animation = true
-      shaking = true
-      set_physics_process(true)
-      
-    'shake_weak_long':
-      shake_amount = shake_weak
-      sprite_timer.wait_time = shake_long
-      sprite_timer.start()
-      on_animation = true
-      shaking = true
-      set_physics_process(true)
-      
-    'shake_regular_short':
-      shake_amount = shake_regular
-      sprite_timer.wait_time = shake_short
-      sprite_timer.start()
-      on_animation = true
-      shaking = true
-      set_physics_process(true)
-      
-    'shake_regular_medium':
-      shake_amount = shake_regular
-      sprite_timer.wait_time = shake_medium
-      sprite_timer.start()
-      on_animation = true
-      shaking = true
-      set_physics_process(true)
-      
-    'shake_regular_long':
-      shake_amount = shake_regular
-      sprite_timer.wait_time = shake_long
-      sprite_timer.start()
-      on_animation = true
-      shaking = true
-      set_physics_process(true)
-      
-    'shake_strong_short':
-      shake_amount = shake_strong
-      sprite_timer.wait_time = shake_short
-      sprite_timer.start()
-      on_animation = true
-      shaking = true
-      set_physics_process(true)
-      
-    'shake_strong_medium':
-      shake_amount = shake_strong
-      sprite_timer.wait_time = shake_medium
-      sprite_timer.start()
-      on_animation = true
-      shaking = true
-      set_physics_process(true)
-      
-    'shake_strong_long':
-      shake_amount = shake_strong
-      sprite_timer.wait_time = shake_long
-      sprite_timer.start()
-      on_animation = true
-      shaking = true
-      set_physics_process(true)
-      
-    'fade_in':
-      load_image(sprite, image)
-      tween.interpolate_property(sprite, 'modulate',
-          white_transparent, white_opaque, ease_in_speed/1.25,
-          Tween.TRANS_QUAD, Tween.EASE_IN)
-          
-      sprite_timer.wait_time = ease_in_speed/1.25
-      tween.start()
-      sprite_timer.start()
-      on_animation = true
-      
-    'fade_out':
-      tween.interpolate_property(sprite, 'modulate',
-          white_opaque, white_transparent, ease_out_speed/1.25,
-          Tween.TRANS_QUAD, Tween.EASE_OUT)
-          
-      sprite_timer.wait_time = ease_out_speed/1.25
-      tween.start()
-      sprite_timer.start()
-      on_animation = true
-      
-    'move_in':
-      load_image(sprite, image)
-      tween.interpolate_property(sprite, 'position',
-          move_vector, current_pos, ease_in_speed,
-          Tween.TRANS_QUINT, Tween.EASE_IN)
-          
-      tween.interpolate_property(sprite, 'modulate',
-          white_transparent, white_opaque, ease_in_speed,
-          Tween.TRANS_QUINT, Tween.EASE_IN)
-          
-      sprite_timer.wait_time = ease_in_speed
-      tween.start()
-      sprite_timer.start()
-      on_animation = true
-      
-    'move_out':
-      tween.interpolate_property(sprite, 'position',
-          current_pos, move_vector, ease_out_speed,
-          Tween.TRANS_BACK, Tween.EASE_OUT)
-          
-      tween.interpolate_property(sprite, 'modulate',
-          white_opaque, black_transparent, ease_out_speed,
-          Tween.TRANS_QUINT, Tween.EASE_OUT)
-          
-      sprite_timer.wait_time = ease_out_speed
-      tween.start()
-      sprite_timer.start()
-      on_animation = true
-    
-    'on':
-      tween.interpolate_property(sprite, 'modulate',
-          light_gray_opaque, white_opaque, ease_in_speed,
-          Tween.TRANS_QUAD, Tween.EASE_IN)
-          
-      sprite_timer.wait_time = ease_in_speed
-      tween.start()
-      sprite_timer.start()
-      on_animation = true
-      
-    'off':
-      tween.interpolate_property(sprite, 'modulate',
-          white_opaque, light_gray_opaque, ease_out_speed,
-          Tween.TRANS_QUAD, Tween.EASE_OUT)
-          
-      sprite_timer.wait_time = ease_out_speed
-      tween.start()
-      sprite_timer.start()
-      on_animation = true
-
 
 func load_image(sprite, image):
   sprite.texture = load('%s/%s' % [characters_folder, image])
@@ -706,6 +429,8 @@ func _input(event): # This function can be easily replaced. Just make sure you c
     change_choice('previous')
   if event.is_action_pressed('%s' % next_command):
     change_choice('next')
+  if event.is_action_pressed('%s' % continue_dialogue):
+    next()
 
 
 func _on_Timer_timeout():
@@ -744,10 +469,3 @@ func update_pause():
   paused = false
   timer.wait_time = wait_time
   timer.start()
-
-
-func _on_Sprite_Timer_timeout():
-  sprite.position = previous_pos
-  set_physics_process(false)
-  on_animation = false
-  shaking = false
