@@ -22,18 +22,18 @@ func press_next():
   dialogue.next()
 
 func play_dialogue(dialogue_id):
-  dialogue.initiate(dialogue_id)
+  dialogue.transition(dialogue_id)
 
 func init_a():
-  dialogue.initiate('avatars')
+  dialogue.transition('avatars')
 
 
 func init_b():
-  dialogue.initiate('question')
+  dialogue.transition('question')
 
 
 func init_c():
-  dialogue.initiate('complex')
+  dialogue.transition('complex')
 
 
 func clear():

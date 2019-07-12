@@ -23,11 +23,9 @@
     "value": [["question", "1"]]
   },
   "chose_option_2": {
-    "type": "action",
-    "operation": "variable",
-    "dictionary": "variables",
-    "text": "It is an old lock and after several minutes it opens with a satisfying click. You enter the house.",
-    "value": [["question", "2"]]
+    "type": "text",
+    "content": "It is an old lock and after several minutes it opens with a satisfying click. You enter the house.",
+    "next": "enter_hall"
   },
   "chose_option_3": {
     "type": "action",
@@ -35,5 +33,10 @@
     "dictionary": "variables",
     "text": "There is a bronze bell hanging to the right of the door. You ring it and wait for several minutes, but there is no response.",
     "value": [["question", "3"]]
+  },
+  "enter_hall": {
+    "type": "dialogue_transition",
+    "next_dialogue": "hall"
   }
+
 }

@@ -56,6 +56,7 @@ var show_names : bool = false # Turn on and off the character name labels
 var id
 var next_step = ''
 var dialogue
+var current_img_name = ''
 var phrase = ''
 var phrase_raw = ''
 var current = ''
@@ -70,12 +71,6 @@ var pause_index : = 0
 var paused : = false
 var pause_array : = []
 
-
-
-
-
-
-#
 onready var sprite_timer : Node = $SpriteTimer
 onready var tween : Node = $Tween
 
@@ -92,41 +87,20 @@ var move_distance = 100
 var ease_in_speed = 0.25
 var ease_out_speed = 0.50
 
-var characters_folder = 'res://img/characters'
-var characters_image_format = 'png'
+var locations_folder = 'res://img/locations'
+var locations_image_format = 'png'
 
 var previous_pos
 var sprite
 
 var on_tween = false
 
-var shake_amount
-
-var shake_weak = 1
-var shake_regular = 2
-var shake_strong = 4
-
-var shake_short = 0.25
-var shake_medium = 0.5
-var shake_long = 2
-
-var avatar_left : String = ''
-var avatar_right : String = ''
-
-var shaking : bool = false
-
 func _ready():
   set_physics_process(true)
   timer.connect('timeout', self, '_on_Timer_timeout')
   sprite_timer.connect('timeout', self, '_on_Sprite_Timer_timeout')
 
-
-func _physics_process(delta):
-  if shaking:
-    sprite.offset = Vector2(rand_range(-1.0, 1.0) * shake_amount, rand_range(-1.0, 1.0) * shake_amount)
-  pass
-
-func initiate(file_id, block = 'first'): # Load the whole dialogue into a variable
+func transition(file_id, block = 'first'): # Load the whole dialogue into a variable
   id = file_id
   var file = File.new()
   file.open('%s/%s.json' % [dialogues_folder, id], file.READ)
@@ -134,8 +108,6 @@ func initiate(file_id, block = 'first'): # Load the whole dialogue into a variab
   dialogue = JSON.parse(json).result
   file.close()
   first(block) # Call the first dialogue block
-
-#func start_from(file_id, block): # Similar to 
 
 func clean(): # Resets some variables to prevent errors.
   continue_indicator.hide()
@@ -167,6 +139,11 @@ func first(block):
 
 
 func update_dialogue(step): # step == whole dialogue block
+  # Check if this step requires a new image
+  var img_name = step.get('image')
+  if img_name != null and img_name != current_img_name:
+    load_image($"../../CenterContainer/Sprite", img_name)
+  
   clean()
   current = step
   number_characters = 0 # Resets the counter
@@ -262,6 +239,9 @@ func update_dialogue(step): # step == whole dialogue block
       else:
         label.visible_characters = number_characters
         next()
+    'dialogue_transition':
+      not_question()
+      transition(step['next_dialogue'])
   
   if wait_time > 0: # Check if the typewriter effect is active and then starts the timer.
     label.visible_characters = 0
@@ -348,7 +328,7 @@ func next():
     update_dialogue(dialogue[next_step])
 
 func load_image(sprite, image):
-  sprite.texture = load('%s/%s' % [characters_folder, image])
+  sprite.texture = load('%s/%s' % [locations_folder, image + "." + locations_image_format])
 
 
 func question(text, options, next):
