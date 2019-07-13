@@ -325,6 +325,10 @@ func next():
         choices.remove_child(n)
     else:
       pass
+
+    # Continue to the next note
+    if not dialogue.has(next_step):
+      print("/!\\ Current dialoge does not contain the node '", next_step, "'")
     update_dialogue(dialogue[next_step])
 
 func change_image(img_name):
