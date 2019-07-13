@@ -15,7 +15,7 @@ _global_script_class_icons={
 
 [application]
 
-config/name="Godot Wild Jam 11"
+config/name="Summer home (Tentative title) - GWJ 11"
 run/main_scene="res://Main.tscn"
 boot_splash/image="res://img/ui/splash_screen.png"
 config/icon="res://icon.png"
