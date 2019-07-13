@@ -1,6 +1,8 @@
 extends Control
 onready var dialogue = get_node('./Sidebar/Dialogue')
 
+export(String) var starting_location = "veranda"
+
 func _ready():
   # Connect all the signals for the buttons
   $CenterContainer/HBoxContainer/VBoxContainer/Continue.connect('pressed', self, 'press_next')
@@ -10,8 +12,8 @@ func _ready():
   $CenterContainer/HBoxContainer/Variables/VBoxContainer/Clear.connect('pressed', self, 'clear')
   $CenterContainer/HBoxContainer/Variables/VBoxContainer/SetVars.connect('pressed', self, 'set_vars')
   
-  
-  play_dialogue('veranda')
+  # This is where the story begins
+  play_dialogue(starting_location)
 
 func _physics_process(delta): # Just to update the Variables label
   var text = 'Variables: \n' + str(PROGRESS.variables) + '\n \n Dialogues: \n' + str(PROGRESS.dialogues)
