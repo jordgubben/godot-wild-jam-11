@@ -3,12 +3,27 @@
     "image": "hall",
     "type": "text",
     "content": "The door opens with a long creak, and you step into the dimly lit hall.",
-    "next": "repeat"
+    "next": "timeline_switch"
   },
-  "repeat": {
+  "timeline_switch": {
+    "type": "divert",
+    "condition": "equal",
+    "dictionary": "variables",
+    "variable": "timeline",
+    "value": "riches",
+    "true": "riches_desc",
+    "false": "rags_desc"
+  },
+  "riches_desc": {
     "image": "hall",
     "type": "text",
-    "content": "And this is where you stay for now.",
-    "next": "repeat"
+    "content": "You are in the hallway in the 'riches' timeline|@and this is where you stay for now.",
+    "next": "riches_desc"
+  },
+  "rags_desc": {
+    "image": "hall",
+    "type": "text",
+    "content": "You are in the hallway in the 'rags' timeline'|@and this is where you stay for now.",
+    "next": "rags_desc"
   }
 }
