@@ -8,4 +8,8 @@ var dialogues = { # Everytime the player talks with an NPC it will be stored her
 
 var variables = { # Variables used as conditions to know what dialogue block the player should see next. 
 #	var1 = true # This is here just for demonstration (and debugging) pourposes.
-  }
+}
+  
+var inventory = {
+  
+}

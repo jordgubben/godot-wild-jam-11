@@ -386,8 +386,11 @@ func change_choice(dir):
 
 
 func update_variable(variables_array, current_dict):
+  var the_dict = progress.get(current_dict)
   for n in variables_array:
-    progress.get(current_dict)[n[0]] = n[1]
+    the_dict[n[0]] = n[1]
+  if current_dict == "inventory":
+    $"../Inventory".update_inventory(the_dict)
 
 
 func _input(event): # This function can be easily replaced. Just make sure you call the function using the right parameters.

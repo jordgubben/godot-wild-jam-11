@@ -1,12 +1,20 @@
 {
   "first": {
     "type": "text",
-    "content": "After a long journey you find yourself on the front lawn of your grandmother's old house. You are overcome with memories of your childhood, when your parents took you here for the summer holidays.@You spent years exploring the house with your cousins, but there always seemed to be something new to discover.",
-    "next": "question_block"
+    "content": "After a long journey you find yourself on the front lawn of your grandmother's old house. You are overcome with memories of your childhood, when your parents took you here for the summer holidays.@You spent years exploring the house with your cousins, but there always seemed to be something new to discover. In an overgrown flower bed you spot a large beetle. You recognize it by its shiny blue carapace from when you were a child, but you are certain that this species went extinct years ago.",
+    "next": "beetle"
   },
   "repeat": {
     "type": "text",
     "content": "Back at the front door again.",
+    "next": "question_block"
+  },
+  "beetle": {
+    "type": "action",
+    "operation": "variable",
+    "dictionary": "inventory",
+    "value": [["beetle", true]],
+    "text": "You put the beetle into the locket.",
     "next": "question_block"
   },
   "question_block": {
