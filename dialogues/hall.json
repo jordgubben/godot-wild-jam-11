@@ -29,8 +29,8 @@
   "rags_desc": {
     "image": "hall",
     "type": "text",
-    "content": "You are in the hallway in the 'rags' timeline'|@and this is where you stay for now.",
-    "next": "rags_desc"
+    "content": "You are in the hallway in the 'rags' timeline'.",
+    "next": "rags_choice"
   },
   "rags_choice": {
     "type": "question",
@@ -39,8 +39,51 @@
     "next": ["enter_living_room", "rags_desc"]
   },
 
-  "enter_living_room": {
-    "type": "dialogue_transition",
-    "next_dialogue": "living_room"
-  },
+  "enter_living_room":{
+      "type":"divert",
+      "condition":"boolean",
+      "dictionary":"rifts",
+      "variable":"hall+living_room",
+      "value":"riches",
+      "true":"swap_timline_before_moving_to_living_room",
+      "false":"move_to_living_room"
+   },
+   "swap_timline_before_moving_to_living_room":{
+      "type":"divert",
+      "condition":"equal",
+      "dictionary":"variables",
+      "variable":"timeline",
+      "value":"riches",
+      "true":"swap_to_rags_before_moving_to_living_room",
+      "false":"swap_to_riches_before_moving_to_living_room"
+   },
+   "swap_to_rags_before_moving_to_living_room":{
+      "type":"action",
+      "operation":"variable",
+      "dictionary":"variables",
+      "value":[
+         [
+            "timeline",
+            "rags"
+         ]
+      ],
+      "next":"move_to_living_room"
+   },
+   "swap_to_riches_before_moving_to_living_room":{
+      "type":"action",
+      "operation":"variable",
+      "dictionary":"variables",
+      "value":[
+         [
+            "timeline",
+            "riches"
+         ]
+      ],
+      "next":"move_to_living_room"
+   },
+   "move_to_living_room":{
+      "type":"dialogue_transition",
+      "next_dialogue":"living_room"
+   }
+
 }

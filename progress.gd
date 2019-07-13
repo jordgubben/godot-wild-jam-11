@@ -11,3 +11,9 @@ var variables = {
 	# What timeline the player is currenlty in
 	'timeline': "rags" # Alt: 'rags', 'riches', 'ruins'
   }
+
+# Map of what passages between locations have open rifts
+# (Only keeps track of existance, not involved timelines)
+var rifts = {
+	"hall+living_room": true
+}
