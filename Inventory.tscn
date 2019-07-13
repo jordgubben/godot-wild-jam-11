@@ -10,20 +10,26 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 color = Color( 0.235294, 0.235294, 0.235294, 1 )
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
-margin_left = 25.0
-margin_top = 25.0
-margin_right = 25.0
+[node name="ColorRect2" type="ColorRect" parent="."]
+anchor_right = 1.0
 margin_bottom = 25.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color( 0.521569, 0.521569, 0.521569, 1 )
 
-[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer"]
-margin_right = 300.0
-margin_bottom = 125.0
-rect_min_size = Vector2( 300, 125 )
+[node name="RichTextLabel" type="RichTextLabel" parent="ColorRect2"]
+margin_left = 122.0
+margin_top = 3.0
+margin_right = 202.0
+margin_bottom = 28.0
+rect_min_size = Vector2( 80, 25 )
+rect_clip_content = false
+size_flags_horizontal = 2
+size_flags_vertical = 0
 text = "Inventory"
+scroll_active = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 
 [node name="Items" type="VBoxContainer" parent="VBoxContainer"]
-margin_top = 129.0
-margin_right = 300.0
-margin_bottom = 129.0
 

@@ -9,11 +9,11 @@
 [ext_resource path="res://img/locations/test_location.png" type="Texture" id=7]
 [ext_resource path="res://transition.shader" type="Shader" id=8]
 
-[sub_resource type="ShaderMaterial" id=2]
+[sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 8 )
-shader_param/darkness = 1.0
+shader_param/darkness = 0.0
 
-[sub_resource type="Animation" id=5]
+[sub_resource type="Animation" id=2]
 resource_name = "black_0.3"
 length = 0.3
 tracks/0/type = "value"
@@ -319,7 +319,7 @@ centered = false
 region_rect = Rect2( 0, 0, 600, 600 )
 
 [node name="Overlay" type="ColorRect" parent="UI/CenterContainer"]
-material = SubResource( 2 )
+material = SubResource( 1 )
 margin_right = 600.0
 margin_bottom = 600.0
 rect_min_size = Vector2( 600, 600 )
@@ -327,7 +327,7 @@ color = Color( 0, 0, 0, 1 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="UI/CenterContainer/Overlay"]
 pause_mode = 1
-anims/black_0.3 = SubResource( 5 )
+anims/black_0.3 = SubResource( 2 )
 anims/fade_black = SubResource( 3 )
 anims/fade_light = SubResource( 4 )
 
