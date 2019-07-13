@@ -9,5 +9,5 @@ var dialogues = { # Everytime the player talks with an NPC it will be stored her
 # Misc game state
 var variables = {
 	# What timeline the player is currenlty in
-	'timeline': "rags"
+	'timeline': "rags" # Alt: 'rags', 'riches', 'ruins'
   }

@@ -73,7 +73,7 @@ grow_vertical = 0
 rect_min_size = Vector2( 900, 600 )
 custom_constants/separation = 0
 script = ExtResource( 2 )
-starting_location = "hall"
+starting_location = "living_room"
 
 [node name="Sidebar" type="VBoxContainer" parent="UI"]
 margin_right = 300.0

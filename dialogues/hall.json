@@ -2,7 +2,7 @@
   "first": {
     "image": "hall",
     "type": "text",
-    "content": "The door opens with a long creak, and you step into the dimly lit hall.",
+    "content": "You step into the dimly lit hall.",
     "next": "timeline_switch"
   },
   "timeline_switch": {
@@ -17,13 +17,30 @@
   "riches_desc": {
     "image": "hall",
     "type": "text",
-    "content": "You are in the hallway in the 'riches' timeline|@and this is where you stay for now.",
-    "next": "riches_desc"
+    "content": "You are in the hallway in the 'riches' timeline.",
+    "next": "riches_choice"
+  },
+  "riches_choice": {
+    "type": "question",
+    "text": "Whats next?",
+    "options": ["-> Living room", "Stay here"],
+    "next": ["enter_living_room", "riches_desc"]
   },
   "rags_desc": {
     "image": "hall",
     "type": "text",
     "content": "You are in the hallway in the 'rags' timeline'|@and this is where you stay for now.",
     "next": "rags_desc"
-  }
+  },
+  "rags_choice": {
+    "type": "question",
+    "text": "Whats next?",
+    "options": ["-> Living room", "Stay here"],
+    "next": ["enter_living_room", "rags_desc"]
+  },
+
+  "enter_living_room": {
+    "type": "dialogue_transition",
+    "next_dialogue": "living_room"
+  },
 }
