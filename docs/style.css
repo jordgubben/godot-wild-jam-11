@@ -1,0 +1,215 @@
+:root {
+    --body-width: 48rem;
+
+    --background: #f5f5f5;
+
+    --accent: #e4004c;
+    --accent-light: #ff0055;
+    --accent-dark: #e2004b;
+    --light-grey: #888888;
+    --medium-grey: #555555;
+    --dark-grey: #494949;
+    --almost-black: #2e2e2e;
+
+    --code-back: #ffffff;
+    --code-color-a: rgb(0, 145, 212);
+    --code-color-b: rgb(0, 206, 45);
+    --code-color-c: rgb(255, 149, 0);
+
+
+    --font-family: "Helvetica", "Verdana", "Arial", sans-serif;
+    --font-size: 1rem;
+}
+
+body {
+    color: var(--dark-grey);
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    line-height: 1.7;
+    padding: 1rem;
+    margin: auto;
+    max-width: var(--body-width);
+    background: var(--background);
+}
+
+body::-webkit-scrollbar{
+    background: rgb(214, 214, 214);
+    width: 0.8rem;
+}
+
+body::-webkit-scrollbar-thumb {
+    background: rgb(187, 187, 187);
+}
+
+body::-webkit-scrollbar-thumb:hover {
+    background:rgb(160, 160, 160);
+}
+
+*::selection {
+    background: var(--accent);
+    color: #fff;
+}
+
+a, a:visited {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+a:hover, a:active, a:focus {
+    color: var(--accent-light);
+}
+
+ul{
+    margin-top: -1rem;
+    padding: 0 0 0 2rem;
+    line-height: 1.25rem;
+    list-style-type: none;
+}
+
+ul p{
+    color: var(--accent);
+    margin: 0.5rem 2rem 0.5rem -1rem;
+}
+
+li::before{
+    content: "\2022  ";
+    font-size: 1rem;
+    color: var(--accent);
+}
+
+h1::after {
+    content: "v1.2";
+    background: var(--accent);
+    color: #fff;
+    font-size: 1.25rem;
+    font-weight: bold;
+    padding: 0.2rem 0.5rem 0.2rem 0.5rem ;
+    margin-left: 0.7rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--almost-black);
+    margin-top: 1.25rem;
+}
+
+h1 {
+    font-weight: normal;
+    font-size: 2.5em;
+}
+
+h2 {
+    font-weight: normal;
+    font-size: 2em;
+}
+
+h3 {
+    font-weight: normal;
+    font-size: 1.5em;
+}
+
+h4 {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+h4.release {
+    font-weight: normal;
+}
+
+h5, h6 {
+    font-weight: bold;
+}
+
+.logo {
+    max-height: 56px;
+    margin-bottom: -0.56rem;
+    margin-right: 0.3rem;
+    margin-left: 0;
+}
+
+span {
+    white-space: pre-line;
+}
+
+table {
+    width: 100%;
+}
+tr:nth-child(odd){
+    background: #e4e4e4;
+}
+
+td {
+    padding: 1rem;
+    display: table-cell;
+    white-space: pre-line;
+}
+
+td.parameter {
+    font-weight: bold;
+    color: var(--accent);
+}
+
+td.optional::after {
+    font-weight: normal;
+    margin-left: 0.3rem;
+    content: "(optional)";
+    color: var(--medium-grey);
+    font-size: 0.8rem;
+}
+
+accent {
+    color: var(--accent);
+}
+
+code {
+    color: #8d8d8d;
+    margin: 1rem 0rem;
+    padding: 2rem 3rem;
+    display: block;
+    background: var(--code-back);
+    font-size: 1.2rem;
+    white-space: pre-line;
+}
+
+syntax-a {
+    color: var(--code-color-a);
+}
+
+syntax-b {
+    color: var(--code-color-b);
+}
+
+syntax-c {
+    color: var(--code-color-c);
+}
+
+spc {
+    margin-left: 25px;
+}
+
+label {
+    background: var(--accent);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 0.2rem 0.4rem 0.2rem 0.4rem ;
+}
+
+label.update {
+margin-right: 0.5rem;
+}
+
+hr {
+    display: block;
+    height: 1px;
+    max-width: calc(var(--body-width) * 0.75);
+    margin-top: 3rem;
+    border: 0;
+    background: rgb(211, 211, 211);
+    padding: 0;
+}
+
+footer {
+    text-align: center;
+    margin: 3rem 0rem;
+}

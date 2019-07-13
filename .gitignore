@@ -1,4 +1,3 @@
-
 # Godot-specific ignores
 .import/
 export.cfg
@@ -9,3 +8,6 @@ export_presets.cfg
 
 # Screenshots, Trailes etc.
 _archive/
+
+# Godot open dialogue
+img/locations/*.import

@@ -1,0 +1,335 @@
+[gd_scene load_steps=13 format=2]
+
+[ext_resource path="res://Theme.tres" type="Theme" id=1]
+[ext_resource path="res://ui.gd" type="Script" id=2]
+[ext_resource path="res://Inventory.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Dialogue.tscn" type="PackedScene" id=4]
+[ext_resource path="res://fonts/adobe_source_san_pro_ttf/godot_font_format/source_sans_pro_regular_16.tres" type="DynamicFont" id=5]
+[ext_resource path="res://fonts/adobe_source_san_pro_ttf/godot_font_format/source_sans_pro_bold_16.tres" type="DynamicFont" id=6]
+[ext_resource path="res://img/locations/test_location.png" type="Texture" id=7]
+[ext_resource path="res://transition.shader" type="Shader" id=8]
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = ExtResource( 8 )
+shader_param/darkness = 1.0
+
+[sub_resource type="Animation" id=5]
+resource_name = "black_0.3"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:material:shader_param/darkness")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 1.0 ]
+}
+
+[sub_resource type="Animation" id=3]
+resource_name = "fade_black"
+step = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:material:shader_param/darkness")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1.86607, 1.86607 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
+}
+
+[sub_resource type="Animation" id=4]
+resource_name = "fade_light"
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:material:shader_param/darkness")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.3, 0.7, 1 ),
+"transitions": PoolRealArray( 1.6245, 1, 0.637281, 1 ),
+"update": 0,
+"values": [ 1.0, 0.75, 0.25, 0.0 ]
+}
+
+[node name="Main" type="Control"]
+margin_right = 900.0
+margin_bottom = 600.0
+rect_min_size = Vector2( 900, 600 )
+theme = ExtResource( 1 )
+
+[node name="UI" type="HBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 0
+rect_min_size = Vector2( 900, 600 )
+custom_constants/separation = 0
+script = ExtResource( 2 )
+
+[node name="Sidebar" type="VBoxContainer" parent="UI"]
+margin_right = 300.0
+margin_bottom = 600.0
+rect_min_size = Vector2( 300, 600 )
+custom_constants/separation = 0
+
+[node name="Inventory" parent="UI/Sidebar" instance=ExtResource( 3 )]
+margin_right = 300.0
+margin_bottom = 200.0
+rect_min_size = Vector2( 300, 200 )
+
+[node name="Dialogue" parent="UI/Sidebar" instance=ExtResource( 4 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 200.0
+margin_right = 300.0
+margin_bottom = 600.0
+grow_horizontal = 0
+grow_vertical = 0
+rect_min_size = Vector2( 300, 400 )
+
+[node name="CenterContainer" type="CenterContainer" parent="UI"]
+margin_left = 300.0
+margin_right = 900.0
+margin_bottom = 600.0
+rect_min_size = Vector2( 600, 600 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CenterContainer"]
+editor/display_folded = true
+visible = false
+margin_left = 54.0
+margin_top = 99.0
+margin_right = 546.0
+margin_bottom = 500.0
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CenterContainer/HBoxContainer"]
+margin_right = 164.0
+margin_bottom = 401.0
+
+[node name="InitiateA" type="Button" parent="UI/CenterContainer/HBoxContainer/VBoxContainer"]
+margin_right = 164.0
+margin_bottom = 27.0
+focus_mode = 0
+custom_fonts/font = ExtResource( 5 )
+shortcut_in_tooltip = false
+enabled_focus_mode = 0
+text = "Initiate 'avatars' dialogue"
+
+[node name="HSeparator" type="HSeparator" parent="UI/CenterContainer/HBoxContainer/VBoxContainer"]
+margin_top = 31.0
+margin_right = 164.0
+margin_bottom = 36.0
+rect_min_size = Vector2( 0, 5 )
+
+[node name="InitiateB" type="Button" parent="UI/CenterContainer/HBoxContainer/VBoxContainer"]
+margin_top = 40.0
+margin_right = 164.0
+margin_bottom = 67.0
+focus_mode = 0
+custom_fonts/font = ExtResource( 5 )
+shortcut_in_tooltip = false
+enabled_focus_mode = 0
+text = "Initiate 'question' dialogue"
+
+[node name="HSeparator2" type="HSeparator" parent="UI/CenterContainer/HBoxContainer/VBoxContainer"]
+margin_top = 71.0
+margin_right = 164.0
+margin_bottom = 76.0
+rect_min_size = Vector2( 0, 5 )
+
+[node name="InitiateC" type="Button" parent="UI/CenterContainer/HBoxContainer/VBoxContainer"]
+margin_top = 80.0
+margin_right = 164.0
+margin_bottom = 107.0
+focus_mode = 0
+custom_fonts/font = ExtResource( 5 )
+shortcut_in_tooltip = false
+enabled_focus_mode = 0
+text = "Initiate 'complex' dialogue"
+
+[node name="HSeparator3" type="HSeparator" parent="UI/CenterContainer/HBoxContainer/VBoxContainer"]
+margin_top = 111.0
+margin_right = 164.0
+margin_bottom = 366.0
+rect_min_size = Vector2( 0, 255 )
+
+[node name="Continue" type="Button" parent="UI/CenterContainer/HBoxContainer/VBoxContainer"]
+margin_top = 370.0
+margin_right = 164.0
+margin_bottom = 401.0
+focus_mode = 0
+size_flags_horizontal = 15
+custom_fonts/font = ExtResource( 6 )
+shortcut_in_tooltip = false
+enabled_focus_mode = 0
+text = "Continue"
+
+[node name="VSeparator" type="VSeparator" parent="UI/CenterContainer/HBoxContainer"]
+margin_left = 168.0
+margin_right = 188.0
+margin_bottom = 401.0
+rect_min_size = Vector2( 20, 0 )
+
+[node name="Variables" type="Panel" parent="UI/CenterContainer/HBoxContainer"]
+editor/display_folded = true
+margin_left = 192.0
+margin_right = 492.0
+margin_bottom = 401.0
+rect_min_size = Vector2( 300, 400 )
+
+[node name="Label" type="Label" parent="UI/CenterContainer/HBoxContainer/Variables"]
+anchor_right = 1.0
+margin_left = 10.0
+margin_top = 10.0
+margin_right = -10.0
+margin_bottom = 17.0
+autowrap = true
+
+[node name="Vars" type="Label" parent="UI/CenterContainer/HBoxContainer/Variables"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_left = 10.0
+margin_top = -197.0
+margin_right = 43.0
+margin_bottom = -20.0
+custom_fonts/font = ExtResource( 5 )
+text = "var1 =
+
+var2 =
+
+var3 =
+
+var4 =
+
+var5 ="
+
+[node name="Var1" type="LineEdit" parent="UI/CenterContainer/HBoxContainer/Variables"]
+margin_left = 48.0
+margin_top = 200.0
+margin_right = 104.0
+margin_bottom = 227.0
+focus_mode = 1
+custom_fonts/font = ExtResource( 5 )
+max_length = 10
+focus_mode = 1
+placeholder_text = "true"
+placeholder_alpha = 0.2
+caret_blink = true
+
+[node name="Var2" type="LineEdit" parent="UI/CenterContainer/HBoxContainer/Variables"]
+margin_left = 48.0
+margin_top = 240.0
+margin_right = 104.0
+margin_bottom = 267.0
+focus_mode = 1
+custom_fonts/font = ExtResource( 5 )
+max_length = 10
+focus_mode = 1
+placeholder_text = "2"
+placeholder_alpha = 0.2
+caret_blink = true
+
+[node name="Var3" type="LineEdit" parent="UI/CenterContainer/HBoxContainer/Variables"]
+margin_left = 48.0
+margin_top = 280.0
+margin_right = 104.0
+margin_bottom = 307.0
+focus_mode = 1
+custom_fonts/font = ExtResource( 5 )
+max_length = 10
+focus_mode = 1
+placeholder_text = "5"
+placeholder_alpha = 0.2
+caret_blink = true
+
+[node name="Var4" type="LineEdit" parent="UI/CenterContainer/HBoxContainer/Variables"]
+margin_left = 48.0
+margin_top = 320.0
+margin_right = 104.0
+margin_bottom = 347.0
+focus_mode = 1
+custom_fonts/font = ExtResource( 5 )
+max_length = 10
+focus_mode = 1
+placeholder_text = "5"
+placeholder_alpha = 0.2
+caret_blink = true
+
+[node name="Var5" type="LineEdit" parent="UI/CenterContainer/HBoxContainer/Variables"]
+margin_left = 48.0
+margin_top = 360.0
+margin_right = 104.0
+margin_bottom = 387.0
+focus_mode = 1
+custom_fonts/font = ExtResource( 5 )
+max_length = 10
+focus_mode = 1
+placeholder_text = "5"
+placeholder_alpha = 0.2
+caret_blink = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CenterContainer/HBoxContainer/Variables"]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -125.0
+margin_top = -76.0
+margin_right = -10.0
+margin_bottom = -10.0
+
+[node name="SetVars" type="Button" parent="UI/CenterContainer/HBoxContainer/Variables/VBoxContainer"]
+margin_right = 115.0
+margin_bottom = 27.0
+focus_mode = 0
+size_flags_horizontal = 15
+custom_fonts/font = ExtResource( 5 )
+shortcut_in_tooltip = false
+enabled_focus_mode = 0
+text = "Set Variables"
+
+[node name="HSeparator" type="HSeparator" parent="UI/CenterContainer/HBoxContainer/Variables/VBoxContainer"]
+margin_top = 31.0
+margin_right = 115.0
+margin_bottom = 35.0
+
+[node name="Clear" type="Button" parent="UI/CenterContainer/HBoxContainer/Variables/VBoxContainer"]
+margin_top = 39.0
+margin_right = 115.0
+margin_bottom = 66.0
+focus_mode = 0
+size_flags_horizontal = 15
+custom_fonts/font = ExtResource( 5 )
+shortcut_in_tooltip = false
+enabled_focus_mode = 0
+text = "Clear Dictionaries"
+
+[node name="Sprite" type="Sprite" parent="UI/CenterContainer"]
+texture = ExtResource( 7 )
+centered = false
+region_rect = Rect2( 0, 0, 600, 600 )
+
+[node name="Overlay" type="ColorRect" parent="UI/CenterContainer"]
+material = SubResource( 2 )
+margin_right = 600.0
+margin_bottom = 600.0
+rect_min_size = Vector2( 600, 600 )
+color = Color( 0, 0, 0, 1 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="UI/CenterContainer/Overlay"]
+pause_mode = 1
+anims/black_0.3 = SubResource( 5 )
+anims/fade_black = SubResource( 3 )
+anims/fade_light = SubResource( 4 )
+
+[connection signal="animation_finished" from="UI/CenterContainer/Overlay/AnimationPlayer" to="UI/Sidebar/Dialogue" method="_on_AnimationPlayer_animation_finished"]
+[connection signal="animation_started" from="UI/CenterContainer/Overlay/AnimationPlayer" to="UI/Sidebar/Dialogue" method="_on_AnimationPlayer_animation_started"]

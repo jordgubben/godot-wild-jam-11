@@ -1,0 +1,14 @@
+{
+  "first": {
+    "image": "hall",
+    "type": "text",
+    "content": "The door opens with a long creak, and you step into the dimly lit hall.",
+    "next": "repeat"
+  },
+  "repeat": {
+    "image": "hall",
+    "type": "text",
+    "content": "And this is where you stay for now.",
+    "next": "repeat"
+  }
+}
