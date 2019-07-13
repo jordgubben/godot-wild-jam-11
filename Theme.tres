@@ -123,4 +123,3 @@ TextEdit/styles/normal = ExtResource( 9 )
 TextEdit/styles/read_only = null
 VSeparator/constants/separation = 4
 VSeparator/styles/separator = SubResource( 3 )
-
