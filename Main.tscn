@@ -1,15 +1,16 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://Theme.tres" type="Theme" id=1]
-[ext_resource path="res://ui.gd" type="Script" id=2]
-[ext_resource path="res://Inventory.tscn" type="PackedScene" id=3]
-[ext_resource path="res://Dialogue.tscn" type="PackedScene" id=4]
-[ext_resource path="res://fonts/adobe_source_san_pro_ttf/godot_font_format/source_sans_pro_regular_16.tres" type="DynamicFont" id=5]
-[ext_resource path="res://fonts/adobe_source_san_pro_ttf/godot_font_format/source_sans_pro_bold_16.tres" type="DynamicFont" id=6]
-[ext_resource path="res://transition.shader" type="Shader" id=7]
+[ext_resource path="res://src/main.gd" type="Script" id=2]
+[ext_resource path="res://ui.gd" type="Script" id=3]
+[ext_resource path="res://Inventory.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Dialogue.tscn" type="PackedScene" id=5]
+[ext_resource path="res://fonts/adobe_source_san_pro_ttf/godot_font_format/source_sans_pro_regular_16.tres" type="DynamicFont" id=6]
+[ext_resource path="res://fonts/adobe_source_san_pro_ttf/godot_font_format/source_sans_pro_bold_16.tres" type="DynamicFont" id=7]
+[ext_resource path="res://transition.shader" type="Shader" id=8]
 
 [sub_resource type="ShaderMaterial" id=1]
-shader = ExtResource( 7 )
+shader = ExtResource( 8 )
 shader_param/darkness = 1.0
 
 [sub_resource type="Animation" id=2]
@@ -64,6 +65,7 @@ margin_right = 900.0
 margin_bottom = 600.0
 rect_min_size = Vector2( 900, 600 )
 theme = ExtResource( 1 )
+script = ExtResource( 2 )
 
 [node name="UI" type="HBoxContainer" parent="."]
 anchor_right = 1.0
@@ -72,8 +74,7 @@ grow_horizontal = 0
 grow_vertical = 0
 rect_min_size = Vector2( 900, 600 )
 custom_constants/separation = 0
-script = ExtResource( 2 )
-starting_location = "hall"
+script = ExtResource( 3 )
 
 [node name="Sidebar" type="VBoxContainer" parent="UI"]
 margin_right = 300.0
@@ -81,12 +82,12 @@ margin_bottom = 600.0
 rect_min_size = Vector2( 300, 600 )
 custom_constants/separation = 0
 
-[node name="Inventory" parent="UI/Sidebar" instance=ExtResource( 3 )]
+[node name="Inventory" parent="UI/Sidebar" instance=ExtResource( 4 )]
 margin_right = 300.0
 margin_bottom = 200.0
 rect_min_size = Vector2( 300, 200 )
 
-[node name="Dialogue" parent="UI/Sidebar" instance=ExtResource( 4 )]
+[node name="Dialogue" parent="UI/Sidebar" instance=ExtResource( 5 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 200.0
@@ -119,7 +120,7 @@ margin_bottom = 401.0
 margin_right = 164.0
 margin_bottom = 27.0
 focus_mode = 0
-custom_fonts/font = ExtResource( 5 )
+custom_fonts/font = ExtResource( 6 )
 shortcut_in_tooltip = false
 enabled_focus_mode = 0
 text = "Initiate 'avatars' dialogue"
@@ -135,7 +136,7 @@ margin_top = 40.0
 margin_right = 164.0
 margin_bottom = 67.0
 focus_mode = 0
-custom_fonts/font = ExtResource( 5 )
+custom_fonts/font = ExtResource( 6 )
 shortcut_in_tooltip = false
 enabled_focus_mode = 0
 text = "Initiate 'question' dialogue"
@@ -151,7 +152,7 @@ margin_top = 80.0
 margin_right = 164.0
 margin_bottom = 107.0
 focus_mode = 0
-custom_fonts/font = ExtResource( 5 )
+custom_fonts/font = ExtResource( 6 )
 shortcut_in_tooltip = false
 enabled_focus_mode = 0
 text = "Initiate 'complex' dialogue"
@@ -168,7 +169,7 @@ margin_right = 164.0
 margin_bottom = 401.0
 focus_mode = 0
 size_flags_horizontal = 15
-custom_fonts/font = ExtResource( 6 )
+custom_fonts/font = ExtResource( 7 )
 shortcut_in_tooltip = false
 enabled_focus_mode = 0
 text = "Continue"
@@ -201,7 +202,7 @@ margin_left = 10.0
 margin_top = -197.0
 margin_right = 43.0
 margin_bottom = -20.0
-custom_fonts/font = ExtResource( 5 )
+custom_fonts/font = ExtResource( 6 )
 text = "var1 =
 
 var2 =
@@ -218,7 +219,7 @@ margin_top = 200.0
 margin_right = 104.0
 margin_bottom = 227.0
 focus_mode = 1
-custom_fonts/font = ExtResource( 5 )
+custom_fonts/font = ExtResource( 6 )
 max_length = 10
 focus_mode = 1
 placeholder_text = "true"
@@ -231,7 +232,7 @@ margin_top = 240.0
 margin_right = 104.0
 margin_bottom = 267.0
 focus_mode = 1
-custom_fonts/font = ExtResource( 5 )
+custom_fonts/font = ExtResource( 6 )
 max_length = 10
 focus_mode = 1
 placeholder_text = "2"
@@ -244,7 +245,7 @@ margin_top = 280.0
 margin_right = 104.0
 margin_bottom = 307.0
 focus_mode = 1
-custom_fonts/font = ExtResource( 5 )
+custom_fonts/font = ExtResource( 6 )
 max_length = 10
 focus_mode = 1
 placeholder_text = "5"
@@ -257,7 +258,7 @@ margin_top = 320.0
 margin_right = 104.0
 margin_bottom = 347.0
 focus_mode = 1
-custom_fonts/font = ExtResource( 5 )
+custom_fonts/font = ExtResource( 6 )
 max_length = 10
 focus_mode = 1
 placeholder_text = "5"
@@ -270,7 +271,7 @@ margin_top = 360.0
 margin_right = 104.0
 margin_bottom = 387.0
 focus_mode = 1
-custom_fonts/font = ExtResource( 5 )
+custom_fonts/font = ExtResource( 6 )
 max_length = 10
 focus_mode = 1
 placeholder_text = "5"
@@ -292,7 +293,7 @@ margin_right = 115.0
 margin_bottom = 27.0
 focus_mode = 0
 size_flags_horizontal = 15
-custom_fonts/font = ExtResource( 5 )
+custom_fonts/font = ExtResource( 6 )
 shortcut_in_tooltip = false
 enabled_focus_mode = 0
 text = "Set Variables"
@@ -308,7 +309,7 @@ margin_right = 115.0
 margin_bottom = 66.0
 focus_mode = 0
 size_flags_horizontal = 15
-custom_fonts/font = ExtResource( 5 )
+custom_fonts/font = ExtResource( 6 )
 shortcut_in_tooltip = false
 enabled_focus_mode = 0
 text = "Clear Dictionaries"
@@ -329,5 +330,5 @@ pause_mode = 1
 anims/black_0.3 = SubResource( 2 )
 anims/fade_black = SubResource( 3 )
 anims/fade_light = SubResource( 4 )
-[connection signal="animation_finished" from="UI/CenterContainer/Overlay/AnimationPlayer" to="UI/Sidebar/Dialogue" method="_on_AnimationPlayer_animation_finished"]
-[connection signal="animation_started" from="UI/CenterContainer/Overlay/AnimationPlayer" to="UI/Sidebar/Dialogue" method="_on_AnimationPlayer_animation_started"]
+
+[connection signal="animation_finished" from="UI/CenterContainer/Overlay/AnimationPlayer" to="UI" method="_on_AnimationPlayer_animation_finished"]

@@ -1,5 +1,5 @@
 """
-Godot Open Dialogue - Non-linear conversation system
+Based on Godot Open Dialogue - Non-linear conversation system
 Author: J. Sena
 Version: 1.2
 License: CC-BY
@@ -8,6 +8,8 @@ Repository: https://bitbucket.org/jsena42/godot-open-dialogue/
 """
 
 extends Control
+
+onready var config = get_node("/root/CONFIG")
 
 ##### SETUP #####
 ## Paths ##
@@ -27,7 +29,7 @@ var pause_char : String = '|' # The character used in the JSON file to define wh
 var newline_char : String = '@' # The character used in the JSON file to break lines. If you change this you'll need to edit all your dialogue files.
 ## Other customization options ##
 onready var progress = PROGRESS # The AutoLoad script where the interaction log, quest variables, inventory and other useful data should be acessible.
-var dialogues_dict = 'dialogues' # The dictionary on 'progress' used to keep track of interactions.
+var blocks_seen = 'blocks_seen' # The dictionary on 'progress' used to keep track of interactions.
 var choice_plus_y : int = 2 # How much space (in pixels) should be added between the choices (affected by 'choice_height').
 var active_choice : Color = Color(1.0, 1.0, 1.0, 1.0)
 var inactive_choice : Color = Color(1.0, 1.0, 1.0, 0.4)
@@ -54,7 +56,8 @@ var show_names : bool = false # Turn on and off the character name labels
 
 # Default values. Don't change them unless you really know what you're doing.
 var id
-var next_step = ''
+var new_dialogue
+var next_block_name = ''
 var dialogue
 var current_img_name = ''
 var phrase = ''
@@ -87,9 +90,6 @@ var move_distance = 100
 var ease_in_speed = 0.25
 var ease_out_speed = 0.50
 
-var locations_folder = 'res://img/locations'
-var locations_image_format = 'png'
-
 var previous_pos
 var sprite
 
@@ -99,15 +99,18 @@ func _ready():
   set_physics_process(true)
   timer.connect('timeout', self, '_on_Timer_timeout')
   sprite_timer.connect('timeout', self, '_on_Sprite_Timer_timeout')
+  frame.show()
 
-func transition(file_id, block = 'first'): # Load the whole dialogue into a variable
+func transition(file_id, block_name = 'first'): # Load the whole dialogue into a variable
   id = file_id
   var file = File.new()
   file.open('%s/%s.json' % [dialogues_folder, id], file.READ)
   var json = file.get_as_text()
   dialogue = JSON.parse(json).result
   file.close()
-  first(block) # Call the first dialogue block
+  var block = dialogue[block_name]
+  block.id = id + ":" + block_name
+  update_dialogue(block)
 
 func clean(): # Resets some variables to prevent errors.
   continue_indicator.hide()
@@ -123,125 +126,170 @@ func not_question():
   is_question = false
 
 
-func first(block):
-  frame.show()
-  if block == 'first': # Check if we are going to use the default 'first' block
-    if dialogue.has('repeat'):
-      if progress.get(dialogues_dict).has(id): # Checks if it's the first interaction.
-        update_dialogue(dialogue['repeat']) # It's not. Use the 'repeat' block.
-      else:
-        progress.get(dialogues_dict)[id] = true # Updates the singleton containing the interactions log.
-        update_dialogue(dialogue['first']) # It is. Use the 'first' block.
-    else:
-        update_dialogue(dialogue['first'])
-  else: # We are going to use a custom first block
-    update_dialogue(dialogue[block])
+#func first(block):
+#  frame.show()
+#  if block == 'first': # Check if we are going to use the default 'first' block
+#    if dialogue.has('repeat'):
+#      if progress.get(blocks_seen).has(id): # Checks if it's the first interaction.
+#        update_dialogue(dialogue['repeat']) # It's not. Use the 'repeat' block.
+#      else:
+#        progress.get(blocks_seen)[id] = true # Updates the singleton containing the interactions log.
+#        update_dialogue(dialogue['first']) # It is. Use the 'first' block.
+#    else:
+#        update_dialogue(dialogue['first'])
+#  else: # We are going to use a custom first block
+#    update_dialogue(dialogue[block])
 
 
-func update_dialogue(step): # step == whole dialogue block
-  # Check if this step requires a new image
-  var img_name = step.get('image')
-  if img_name != null and img_name != current_img_name:
-    change_image(img_name)
-  
+func update_dialogue(block):
   clean()
-  current = step
+  if not block.has("content") and not block.has("condition"): # No text to show, instant block.
+    not_question()
+    if block.has("set_true"):
+      progress.get("variables")[block["set_true"]] = true
+      if typeof(block["next"]) == TYPE_ARRAY:
+        new_dialogue = block["next"][0]
+        next_block_name = block["next"][1]
+      else: # single value, the name of the next block
+        next_block_name = block["next"]
+    next()
+    return
+  # Not an instant block, figure out which text to display.
+  var text_idx
+  if block.has('content_repeat'):
+    if progress.get(blocks_seen).has(block.id): # Checks if it's the first interaction with this block.
+      text_idx = "content_repeat" # It's not. Use the 'repeat' text.
+    else:
+      progress.get(blocks_seen)[block.id] = true # Updates the singleton containing the interactions log.
+      text_idx = "content" # It is. Use the 'content' text.
+  else:
+    text_idx = "content"
+    
+  current = block
   number_characters = 0 # Resets the counter
+
   # Check what kind of interaction the block is
-  match step['type']:
-    'text': # Simple text.
-      not_question()
-      label.bbcode_text = step['content']
-      check_pauses(label.get_text())
-      check_newlines(phrase_raw)
-      clean_bbcode(step['content'])
-      number_characters = phrase_raw.length()
-      
-      if step.has('next'):
-        next_step = step['next']
+  # The following types exist:
+  # - Instant blocks, that modify the state and then go to the next block without user input.
+  # - Simple blocks, that only show text and let the user continue to the next block.
+  # - Choice blocks, with an "options" field that list the user's options.
+  # - Condition blocks, with a "condition" field and multiple fields that each contain a block
+  
+  if block.has("condition"):
+    not_question()
+    if block["condition"] == "bool":
+      var outcome_block
+      if progress.get("variables").has(block["variable"]):
+        outcome_block = block["true"]
+        outcome_block.id = block.id + ":" + "true"
+        update_dialogue(outcome_block)
       else:
-        next_step = ''
+        outcome_block = block["false"]
+        outcome_block.id = block.id + ":" + "false" 
+        update_dialogue(outcome_block)
+    else:
+      print("/!\\ Condition not implemented.")
+  elif block.has("options"):
+      label.bbcode_text = block[text_idx]
+      question(block[text_idx], block['options'])
+      check_newlines(phrase_raw)
+      clean_bbcode(block[text_idx])
+      number_characters = phrase_raw.length()
+      preset_choice_outcome()
+  else:
+    not_question()
+    label.bbcode_text = block[text_idx]
+    check_pauses(label.get_text())
+    check_newlines(phrase_raw)
+    clean_bbcode(block[text_idx])
+    number_characters = phrase_raw.length()
+    
+    if typeof(block["next"]) == TYPE_ARRAY:
+      new_dialogue = block["next"][0]
+      next_block_name = block["next"][1]
+    else: # single value, the name of the next block
+      next_block_name = block["next"]
         
-    'divert': # Simple way to create complex dialogue trees
-      not_question()
-      print(step['true'])
-      match step['condition']:
-        'boolean':
-          if progress.get(step['dictionary']).has(step['variable']):
-            if progress.get(step['dictionary'])[step['variable']]:
-              next_step = step['true']
-            else:
-              next_step = step['false']
-          else:
-            next_step = step['false']
-        'equal':
-          if progress.get(step['dictionary']).has(step['variable']):
-            if progress.get(step['dictionary'])[step['variable']] == step['value']:
-              next_step = step['true']
-            else:
-              next_step = step['false']
-          else:
-            next_step = step['false']
-        'greater':
-          if progress.get(step['dictionary']).has(step['variable']):
-            if progress.get(step['dictionary'])[step['variable']] > step['value']:
-              next_step = step['true']
-            else:
-              next_step = step['false']
-          else:
-            next_step = step['false']
-        'less':
-          if progress.get(step['dictionary']).has(step['variable']):
-            if progress.get(step['dictionary'])[step['variable']] < step['value']:
-              next_step = step['true']
-            else:
-              next_step = step['false']
-          else:
-            next_step = step['false']
-        'range':
-          if progress.get(step['dictionary']).has(step['variable']):
-            if progress.get(step['dictionary'])[step['variable']] > (step['value'][0] - 1) and progress.get(step['dictionary'])[step['variable']] < (step['value'][1] + 1):
-              next_step = step['true']
-            else:
-              next_step = step['false']
-          else:
-            next_step = step['false']
-      next()
+#    'divert': # Simple way to create complex dialogue trees
+#      not_question()
+#      print(block['true'])
+#      match block['condition']:
+#        'boolean':
+#          if progress.get(block['dictionary']).has(block['variable']):
+#            if progress.get(block['dictionary'])[block['variable']]:
+#              next_block_name = block['true']
+#            else:
+#              next_block_name = block['false']
+#          else:
+#            next_block_name = block['false']
+#        'equal':
+#          if progress.get(block['dictionary']).has(block['variable']):
+#            if progress.get(block['dictionary'])[block['variable']] == block['value']:
+#              next_block_name = block['true']
+#            else:
+#              next_block_name = block['false']
+#          else:
+#            next_block_name = block['false']
+#        'greater':
+#          if progress.get(block['dictionary']).has(block['variable']):
+#            if progress.get(block['dictionary'])[block['variable']] > block['value']:
+#              next_block_name = block['true']
+#            else:
+#              next_block_name = block['false']
+#          else:
+#            next_block_name = block['false']
+#        'less':
+#          if progress.get(block['dictionary']).has(block['variable']):
+#            if progress.get(block['dictionary'])[block['variable']] < block['value']:
+#              next_block_name = block['true']
+#            else:
+#              next_block_name = block['false']
+#          else:
+#            next_block_name = block['false']
+#        'range':
+#          if progress.get(block['dictionary']).has(block['variable']):
+#            if progress.get(block['dictionary'])[block['variable']] > (block['value'][0] - 1) and progress.get(block['dictionary'])[block['variable']] < (block['value'][1] + 1):
+#              next_block_name = block['true']
+#            else:
+#              next_block_name = block['false']
+#          else:
+#            next_block_name = block['false']
+#      next()
       
-    'question': # Moved to question() function to make the code more readable.
-      label.bbcode_text = step['text']
-      question(step['text'], step['options'], step['next'])
-      check_newlines(phrase_raw)
-      clean_bbcode(step['text'])
-      number_characters = phrase_raw.length()
-      next_step = step['next'][0]
-      
-    'action':
-      not_question()
-      
-      match step['operation']:
-        'variable':
-          update_variable(step['value'], step['dictionary'])
-          if step.has('next'):
-            next_step = step['next']
-          else:
-            next_step = ''
-        'random':
-          randomize()
-          next_step = step['value'][randi() % step['value'].size()]
-      
-      if step.has('text'):
-        label.bbcode_text = step['text']
-        check_pauses(label.get_text())
-        check_newlines(phrase_raw)
-        clean_bbcode(step['text'])
-        number_characters = phrase_raw.length()
-      else:
-        label.visible_characters = number_characters
-        next()
-    'dialogue_transition':
-      not_question()
-      transition(step['next_dialogue'])
+#    'question': # Moved to question() function to make the code more readable.
+#      label.bbcode_text = block['text']
+#      question(block['text'], block['options'])
+#      check_newlines(phrase_raw)
+#      clean_bbcode(block['text'])
+#      number_characters = phrase_raw.length()
+#      next_block_name = block['next'][0]
+#
+#    'action':
+#      not_question()
+#
+#      match block['operation']:
+#        'variable':
+#          update_variable(block['value'], block['dictionary'])
+#          if block.has('next'):
+#            next_block_name = block['next']
+#          else:
+#            next_block_name = ''
+#        'random':
+#          randomize()
+#          next_block_name = block['value'][randi() % block['value'].size()]
+#
+#      if block.has('text'):
+#        label.bbcode_text = block['text']
+#        check_pauses(label.get_text())
+#        check_newlines(phrase_raw)
+#        clean_bbcode(block['text'])
+#        number_characters = phrase_raw.length()
+#      else:
+#        label.visible_characters = number_characters
+#        next()
+#    'dialogue_transition':
+#      not_question()
+#      transition(block['next_dialogue'])
   
   if wait_time > 0: # Check if the typewriter effect is active and then starts the timer.
     label.visible_characters = 0
@@ -316,20 +364,21 @@ func next():
   else: # The typewriter effect is disabled so we need to make sure the text is fully displayed.
     label.visible_characters = -1 # -1 tells the RichTextLabel to show all the characters.
   
-  if next_step == '': # Doesn't have a 'next' block.
-    dialogue = null
+  label.bbcode_text = ''
+  if choices.get_child_count() > 0: # If has choices, remove them.
+    for n in choices.get_children():
+      choices.remove_child(n)
   else:
-    label.bbcode_text = ''
-    if choices.get_child_count() > 0: # If has choices, remove them.
-      for n in choices.get_children():
-        choices.remove_child(n)
-    else:
-      pass
-
-    # Continue to the next note
-    if not dialogue.has(next_step):
-      print("/!\\ Current dialoge does not contain the node '", next_step, "'")
-    update_dialogue(dialogue[next_step])
+    pass
+  if new_dialogue != null and new_dialogue != id: # Change to a new dialogue
+    transition(new_dialogue, next_block_name)
+  else:
+  # Continue to the next note
+    if not dialogue.has(next_block_name):
+      print("/!\\ Current dialogue does not contain the node '", next_block_name, "'")
+    var next_block = dialogue[next_block_name]
+    next_block.id = id + ":" + next_block_name
+    update_dialogue(next_block)
 
 func change_image(img_name):
   if img_name != current_img_name:
@@ -337,7 +386,7 @@ func change_image(img_name):
     var fade_animator = $"../../CenterContainer/Overlay/AnimationPlayer"
     fade_animator.play("fade_black")
 
-func question(text, options, next):
+func question(text, options):
   check_pauses(label.get_text())
   var n = 0 # Just a looping var.
   var choice_node_align_x = 0
@@ -354,9 +403,9 @@ func question(text, options, next):
     var choice = choice_scene.instance()
     
     if choice_text_alignment == 'right':
-      choice.bbcode_text = '[right]' + a + '[/right]'
+      choice.bbcode_text = '[right]' + a[0] + '[/right]'
     else:
-      choice.bbcode_text = a
+      choice.bbcode_text = a[0]
     choice.rect_size = Vector2(choice_width, choice_height)
     choices.add_child(choice)
     choices.get_child(n).rect_position.y = (choice_height + choice_plus_y) * n
@@ -370,13 +419,20 @@ func question(text, options, next):
   is_question = true
   number_choices = choices.get_child_count() - 1
 
+func preset_choice_outcome():
+  # Depending on the number of elements in the array, this may be a dialogue switch
+  var opt_array = current['options'][current_choice]
+  if len(opt_array) == 2: # Move to block within this dialogue
+    new_dialogue = id
+    next_block_name = opt_array[1]
+  elif len(opt_array) == 3: # Switch dialogue
+    new_dialogue = opt_array[1]
+    next_block_name = opt_array[2]
 
 func change_choice(dir):
   if is_question:
     if label.visible_characters >= number_characters: # Make sure the whole question is displayed before the player can answer.
-      match dir: # If you want to stop the 'loop' effect on the choices, invert the commented sections.
-    
-        # LOOPING
+      match dir:    
         'previous': # Looping
           choices.get_child(current_choice).self_modulate = inactive_choice
           current_choice = current_choice - 1 if current_choice > 0 else number_choices
@@ -385,9 +441,8 @@ func change_choice(dir):
           choices.get_child(current_choice).self_modulate = inactive_choice
           current_choice = current_choice + 1 if current_choice < number_choices else 0
           choices.get_child(current_choice).self_modulate = active_choice
-    
-      next_step = current['next'][current_choice]
-
+      # Depending on the number of elements in the array, this may be a dialogue switch
+      preset_choice_outcome()
 
 func update_variable(variables_array, current_dict):
   for n in variables_array:
@@ -439,17 +494,3 @@ func update_pause():
   paused = false
   timer.wait_time = wait_time
   timer.start()
-
-func _on_AnimationPlayer_animation_started(anim_name):
-  pass
-  
-func _on_AnimationPlayer_animation_finished(anim_name):
-  var fade_animator = $"../../CenterContainer/Overlay/AnimationPlayer"
-  var image = $"../../CenterContainer/Sprite"
-  if anim_name == "fade_black":
-    image.texture = load('%s/%s' % [locations_folder, current_img_name + "." + locations_image_format])
-    fade_animator.play("black_0.3")
-  elif anim_name == "black_0.3":
-    fade_animator.play("fade_light")
-  else:
-    fade_animator.stop()

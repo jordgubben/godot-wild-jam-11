@@ -1,0 +1,6 @@
+{
+  "first": {
+    "content": "RICHES: You are in the kitchen.",
+    "next": "first"
+  }
+}

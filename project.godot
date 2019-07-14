@@ -22,7 +22,8 @@ config/icon="res://icon.png"
 
 [autoload]
 
-PROGRESS="*res://progress.gd"
+PROGRESS="*res://src/progress.gd"
+CONFIG="*res://src/config.gd"
 
 [display]
 

@@ -1,0 +1,32 @@
+{
+  "first": {
+    "content": "NOW IN RICHES: You are in a dark corridor with an embroidered purple rug and two doors. One smells good, one smells bad.",
+    "content_repeat": "Back in the corridor with two smelly doors.",
+    "options": [
+      ["Look under the rug.", "check_rug"],
+      ["Enter the stinky door.", "riches/bathroom", "first"],
+      ["Enter the fragrant door.", "riches/kitchen", "first"]
+    ]
+  },
+  "check_rug": {
+    "condition": "bool",
+    "variable": "key_found",
+    "true": {
+      "content": "There is nothing under the rug.",
+      "next": "first"
+    },
+    "false": {
+      "content": "There is a key under the rug.",
+      "options": [
+        ["Take it.", "take_key"],
+        ["Leave it.", "first"]
+      ]
+    }
+
+    
+  },
+  "take_key": {
+    "set_true": "key_found",
+    "next": "first"
+  }
+}

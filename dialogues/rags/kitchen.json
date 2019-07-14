@@ -1,0 +1,6 @@
+{
+  "first": {
+    "content": "RAGS: You are in the kitchen.",
+    "next": ["rags/corridor", "first"]
+  }
+}
