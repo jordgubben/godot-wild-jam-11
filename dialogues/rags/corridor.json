@@ -29,7 +29,7 @@
     
   },
   "take_postcard": {
-    "set_true": "postcard_found",
+    "set_var": ["postcard_found", true],
     "next": "first"
   }
 }

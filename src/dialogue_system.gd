@@ -145,8 +145,8 @@ func update_dialogue(block):
   clean()
   if not block.has("content") and not block.has("condition"): # No text to show, instant block.
     not_question()
-    if block.has("set_true"):
-      progress.get("variables")[block["set_true"]] = true
+    if block.has("set_var"):
+      progress.get("variables")[block["set_var"][0]] = block["set_var"][1]
       if typeof(block["next"]) == TYPE_ARRAY:
         new_dialogue = block["next"][0]
         next_block_name = block["next"][1]
