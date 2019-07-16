@@ -1,14 +1,13 @@
 {
   "first": {
     "content": "RAGS: You are in a dark corridor with an embroidered crimson rug and two doors. One smells good, one smells bad.",
-    "content_repeat": "Back in the corridor with two smelly doors.",
     "options": [
       {
         "condition": "postcard_found",
         "option_false": ["Look under the rug.", "check_rug"],
       },
       ["Enter the stinky door.", "rags/bathroom", "first"],
-      ["Enter the fragrant door.", "rags/kitchen", "first"]
+      ["Enter the fragrant door.", "riches/kitchen", "first"]
     ]
   },
   "check_rug": {
@@ -19,7 +18,7 @@
       "next": "first"
     },
     "false": {
-      "content": "There is a postcard under the rug.",
+      "content": "There is a postcard under the rug. It's fanmail from some cult member.",
       "options": [
         ["Take it.", "take_postcard"],
         ["Leave it.", "first"]

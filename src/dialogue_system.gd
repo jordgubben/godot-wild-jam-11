@@ -106,11 +106,15 @@ func transition(file_id, block_name = 'first'): # Load the whole dialogue into a
   var file = File.new()
   file.open('%s/%s.json' % [dialogues_folder, id], file.READ)
   var json = file.get_as_text()
-  dialogue = JSON.parse(json).result
-  file.close()
+  var parsed_json = JSON.parse(json)
+  if len(parsed_json.get("error_string")) > 0:
+    print(parsed_json["error_string"])
+    print("Error on line " + str(parsed_json["error_line"]))
+  dialogue = parsed_json.result
   var block = dialogue[block_name]
   block.id = id + ":" + block_name
   update_dialogue(block)
+  file.close()
 
 func clean(): # Resets some variables to prevent errors.
   continue_indicator.hide()
@@ -140,18 +144,20 @@ func not_question():
 #  else: # We are going to use a custom first block
 #    update_dialogue(dialogue[block])
 
+func set_variable(block):
+  progress.get("variables")[block["set_var"][0]] = block["set_var"][1]
 
 func update_dialogue(block):
   clean()
+  if block.has("set_var"):
+      set_variable(block)
   if not block.has("content") and not block.has("condition"): # No text to show, instant block.
     not_question()
-    if block.has("set_var"):
-      progress.get("variables")[block["set_var"][0]] = block["set_var"][1]
-      if typeof(block["next"]) == TYPE_ARRAY:
-        new_dialogue = block["next"][0]
-        next_block_name = block["next"][1]
-      else: # single value, the name of the next block
-        next_block_name = block["next"]
+    if typeof(block["next"]) == TYPE_ARRAY:
+      new_dialogue = block["next"][0]
+      next_block_name = block["next"][1]
+    else: # single value, the name of the next block
+      next_block_name = block["next"]
     next()
     return
   # Not an instant block, figure out which text to display.
@@ -382,7 +388,6 @@ func evaluate_choice():
   var opt_array = options_available[current_choice]
   # Depending on the number of elements in the array, we may switch to a different dialogue
   if len(opt_array) == 2: # Move to block within this dialogue
-    new_dialogue = id
     next_block_name = opt_array[1]
   elif len(opt_array) == 3: # Switch dialogue
     new_dialogue = opt_array[1]
