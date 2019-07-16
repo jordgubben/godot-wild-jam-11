@@ -31,8 +31,8 @@ var newline_char : String = '@' # The character used in the JSON file to break l
 onready var progress = PROGRESS # The AutoLoad script where the interaction log, quest variables, inventory and other useful data should be acessible.
 var blocks_seen = 'blocks_seen' # The dictionary on 'progress' used to keep track of interactions.
 var choice_plus_y : int = 2 # How much space (in pixels) should be added between the choices (affected by 'choice_height').
-var active_choice : Color = Color(1.0, 1.0, 1.0, 1.0)
-var inactive_choice : Color = Color(1.0, 1.0, 1.0, 0.4)
+var active_choice_color : Color = Color(1.0, 1.0, 1.0, 1.0)
+var inactive_choice_color : Color = Color(1.0, 1.0, 1.0, 0.4)
 var choice_height : int = 20 # Choice label's height
 var choice_width : int = 250 # Choice label's width
 var choice_margin_vertical : int = 10 # Vertical space (in pixels) between the bottom border of the dialogue frame and the last question (affectd by the 'label_margin')
@@ -62,7 +62,7 @@ var dialogue
 var current_img_name = ''
 var phrase = ''
 var phrase_raw = ''
-var current = ''
+var current_block = ''
 var number_characters : = 0
 var dictionary
 
@@ -165,7 +165,7 @@ func update_dialogue(block):
   else:
     text_idx = "content"
     
-  current = block
+  current_block = block
   number_characters = 0 # Resets the counter
 
   # Check what kind of interaction the block is
@@ -195,7 +195,6 @@ func update_dialogue(block):
       check_newlines(phrase_raw)
       clean_bbcode(block[text_idx])
       number_characters = phrase_raw.length()
-      preset_choice_outcome()
   else:
     not_question()
     label.bbcode_text = block[text_idx]
@@ -209,87 +208,6 @@ func update_dialogue(block):
       next_block_name = block["next"][1]
     else: # single value, the name of the next block
       next_block_name = block["next"]
-        
-#    'divert': # Simple way to create complex dialogue trees
-#      not_question()
-#      print(block['true'])
-#      match block['condition']:
-#        'boolean':
-#          if progress.get(block['dictionary']).has(block['variable']):
-#            if progress.get(block['dictionary'])[block['variable']]:
-#              next_block_name = block['true']
-#            else:
-#              next_block_name = block['false']
-#          else:
-#            next_block_name = block['false']
-#        'equal':
-#          if progress.get(block['dictionary']).has(block['variable']):
-#            if progress.get(block['dictionary'])[block['variable']] == block['value']:
-#              next_block_name = block['true']
-#            else:
-#              next_block_name = block['false']
-#          else:
-#            next_block_name = block['false']
-#        'greater':
-#          if progress.get(block['dictionary']).has(block['variable']):
-#            if progress.get(block['dictionary'])[block['variable']] > block['value']:
-#              next_block_name = block['true']
-#            else:
-#              next_block_name = block['false']
-#          else:
-#            next_block_name = block['false']
-#        'less':
-#          if progress.get(block['dictionary']).has(block['variable']):
-#            if progress.get(block['dictionary'])[block['variable']] < block['value']:
-#              next_block_name = block['true']
-#            else:
-#              next_block_name = block['false']
-#          else:
-#            next_block_name = block['false']
-#        'range':
-#          if progress.get(block['dictionary']).has(block['variable']):
-#            if progress.get(block['dictionary'])[block['variable']] > (block['value'][0] - 1) and progress.get(block['dictionary'])[block['variable']] < (block['value'][1] + 1):
-#              next_block_name = block['true']
-#            else:
-#              next_block_name = block['false']
-#          else:
-#            next_block_name = block['false']
-#      next()
-      
-#    'question': # Moved to question() function to make the code more readable.
-#      label.bbcode_text = block['text']
-#      question(block['text'], block['options'])
-#      check_newlines(phrase_raw)
-#      clean_bbcode(block['text'])
-#      number_characters = phrase_raw.length()
-#      next_block_name = block['next'][0]
-#
-#    'action':
-#      not_question()
-#
-#      match block['operation']:
-#        'variable':
-#          update_variable(block['value'], block['dictionary'])
-#          if block.has('next'):
-#            next_block_name = block['next']
-#          else:
-#            next_block_name = ''
-#        'random':
-#          randomize()
-#          next_block_name = block['value'][randi() % block['value'].size()]
-#
-#      if block.has('text'):
-#        label.bbcode_text = block['text']
-#        check_pauses(label.get_text())
-#        check_newlines(phrase_raw)
-#        clean_bbcode(block['text'])
-#        number_characters = phrase_raw.length()
-#      else:
-#        label.visible_characters = number_characters
-#        next()
-#    'dialogue_transition':
-#      not_question()
-#      transition(block['next_dialogue'])
   
   if wait_time > 0: # Check if the typewriter effect is active and then starts the timer.
     label.visible_characters = 0
@@ -297,7 +215,6 @@ func update_dialogue(block):
   elif enable_continue_indicator: # If typewriter effect is disabled check if the ContinueIndicator should be displayed
     continue_indicator.show()
     animations.play('Continue_Indicator')
-
 
 func check_pauses(string):
   var next_search = 0
@@ -363,8 +280,8 @@ func next():
       return # Stop the function here.
   else: # The typewriter effect is disabled so we need to make sure the text is fully displayed.
     label.visible_characters = -1 # -1 tells the RichTextLabel to show all the characters.
-  
   label.bbcode_text = ''
+  
   if choices.get_child_count() > 0: # If has choices, remove them.
     for n in choices.get_children():
       choices.remove_child(n)
@@ -386,6 +303,20 @@ func change_image(img_name):
     var fade_animator = $"../../CenterContainer/Overlay/AnimationPlayer"
     fade_animator.play("fade_black")
 
+func condition_holds(condition):
+  if typeof(condition) == TYPE_STRING: # simple boolean condition for the default variables dictionary
+    return progress.get("variables").get(condition, false)
+  elif typeof(condition) == TYPE_ARRAY: # condition type depends on number of elements
+    if len(condition) == 2: # boolean check on variable in dictionary
+      var dictionary = condition[0]
+      var variable = condition[1]
+      return progress.get(dictionary).get(variable, false)
+    else:
+      print("ERROR: not implemented")
+      get_tree().quit()
+      
+      
+
 func question(text, options):
   check_pauses(label.get_text())
   var n = 0 # Just a looping var.
@@ -399,29 +330,57 @@ func question(text, options):
   choices.rect_position = Vector2(choice_node_align_x,
       frame_height - ((choice_height + choice_plus_y) * options.size() + label_margin + choice_margin_vertical))
   
-  for a in options:
+  for option in filter_options(options):
+    var option_text
+    if typeof(option) == TYPE_ARRAY: # simple [text, next] option
+      option_text = option[0]
+    elif typeof(option) == TYPE_DICTIONARY:  
+      if condition_holds(option) and option.has("option_true"):
+        option_text = option["option_true"][0]
+      elif not condition_holds(option) and option.has("option_false"):
+        option_text = option["option_false"][0]
+      else:
+        print("ERROR: with filtered options there should be a valid option text.")
+        get_tree().quit()
+    
     var choice = choice_scene.instance()
     
     if choice_text_alignment == 'right':
-      choice.bbcode_text = '[right]' + a[0] + '[/right]'
+      choice.bbcode_text = '[right]' + option_text + '[/right]'
     else:
-      choice.bbcode_text = a[0]
+      choice.bbcode_text = option_text
     choice.rect_size = Vector2(choice_width, choice_height)
     choices.add_child(choice)
     choices.get_child(n).rect_position.y = (choice_height + choice_plus_y) * n
     if wait_time > 0:
-      choices.get_child(n).self_modulate = inactive_choice
+      choices.get_child(n).self_modulate = inactive_choice_color
     else:
       if n > 0:
-        choices.get_child(n).self_modulate = inactive_choice
+        choices.get_child(n).self_modulate = inactive_choice_color
     n += 1
   
   is_question = true
   number_choices = choices.get_child_count() - 1
 
-func preset_choice_outcome():
-  # Depending on the number of elements in the array, this may be a dialogue switch
-  var opt_array = current['options'][current_choice]
+func filter_options(proto_options):
+  var real_options = []
+  for protopt in proto_options:
+    if typeof(protopt) == TYPE_ARRAY:
+      real_options.append(protopt)
+    elif typeof(protopt) == TYPE_DICTIONARY:
+      var conditional = condition_holds(protopt["condition"])
+      if conditional and protopt.has("option_true"):
+        real_options.append(protopt["option_true"])
+      elif not conditional and protopt.has("option_false"):
+        real_options.append(protopt["option_false"])
+    else:
+      print("ERROR: option has unexpected type " + str(typeof(protopt)))
+  return real_options
+
+func evaluate_choice():
+  var options_available = filter_options(current_block['options'])
+  var opt_array = options_available[current_choice]
+  # Depending on the number of elements in the array, we may switch to a different dialogue
   if len(opt_array) == 2: # Move to block within this dialogue
     new_dialogue = id
     next_block_name = opt_array[1]
@@ -434,20 +393,17 @@ func change_choice(dir):
     if label.visible_characters >= number_characters: # Make sure the whole question is displayed before the player can answer.
       match dir:    
         'previous': # Looping
-          choices.get_child(current_choice).self_modulate = inactive_choice
+          choices.get_child(current_choice).self_modulate = inactive_choice_color
           current_choice = current_choice - 1 if current_choice > 0 else number_choices
-          choices.get_child(current_choice).self_modulate = active_choice
+          choices.get_child(current_choice).self_modulate = active_choice_color
         'next':
-          choices.get_child(current_choice).self_modulate = inactive_choice
+          choices.get_child(current_choice).self_modulate = inactive_choice_color
           current_choice = current_choice + 1 if current_choice < number_choices else 0
-          choices.get_child(current_choice).self_modulate = active_choice
-      # Depending on the number of elements in the array, this may be a dialogue switch
-      preset_choice_outcome()
+          choices.get_child(current_choice).self_modulate = active_choice_color
 
 func update_variable(variables_array, current_dict):
   for n in variables_array:
     progress.get(current_dict)[n[0]] = n[1]
-
 
 func _input(event): # This function can be easily replaced. Just make sure you call the function using the right parameters.
   if event.is_action_pressed('%s' % previous_command):
@@ -455,8 +411,9 @@ func _input(event): # This function can be easily replaced. Just make sure you c
   if event.is_action_pressed('%s' % next_command):
     change_choice('next')
   if event.is_action_pressed('%s' % continue_dialogue):
-    next()
-
+    if is_question:
+      evaluate_choice() # evaluate the current choice, setting variables
+    next() # move the game forward
 
 func _on_Timer_timeout():
   if label.visible_characters < number_characters: # Check if the timer needs to be started
@@ -476,13 +433,12 @@ func _on_Timer_timeout():
     timer.start()
   else:
     if is_question:
-      choices.get_child(0).self_modulate = active_choice
+      choices.get_child(0).self_modulate = active_choice_color
     elif dialogue and enable_continue_indicator:
       animations.play('Continue_Indicator')
       continue_indicator.show()
     timer.stop()
     return
-
 
 func update_pause():
   if pause_array.size() > (pause_index+1): # Check if the current pause is not the last one. 
