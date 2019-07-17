@@ -129,21 +129,6 @@ func clean(): # Resets some variables to prevent errors.
 func not_question():
   is_question = false
 
-
-#func first(block):
-#  frame.show()
-#  if block == 'first': # Check if we are going to use the default 'first' block
-#    if dialogue.has('repeat'):
-#      if progress.get(blocks_seen).has(id): # Checks if it's the first interaction.
-#        update_dialogue(dialogue['repeat']) # It's not. Use the 'repeat' block.
-#      else:
-#        progress.get(blocks_seen)[id] = true # Updates the singleton containing the interactions log.
-#        update_dialogue(dialogue['first']) # It is. Use the 'first' block.
-#    else:
-#        update_dialogue(dialogue['first'])
-#  else: # We are going to use a custom first block
-#    update_dialogue(dialogue[block])
-
 func set_variable(block):
   progress.get("variables")[block["set_var"][0]] = block["set_var"][1]
 
@@ -183,18 +168,13 @@ func update_dialogue(block):
   
   if block.has("condition"):
     not_question()
-    if block["condition"] == "bool":
-      var outcome_block
-      if progress.get("variables").has(block["variable"]):
-        outcome_block = block["true"]
-        outcome_block.id = block.id + ":" + "true"
-        update_dialogue(outcome_block)
-      else:
-        outcome_block = block["false"]
-        outcome_block.id = block.id + ":" + "false" 
-        update_dialogue(outcome_block)
+    var outcome_block = condition_outcome(block)
+    if condition_holds(block["condition"]):
+      outcome_block.id = block.id + ":true"
     else:
-      print("/!\\ Condition not implemented.")
+      outcome_block.id = block.id + ":false"
+    update_dialogue(outcome_block)
+    return
   elif block.has("options"):
       label.bbcode_text = block[text_idx]
       question(block[text_idx], block['options'])
@@ -255,7 +235,6 @@ func check_newlines(string):
       new_pause_array.append(pause_array_backup[a]-current_line)
         
     pause_array = new_pause_array
-
 
 func clean_bbcode(string):
   phrase = string
@@ -321,7 +300,11 @@ func condition_holds(condition):
       print("ERROR: not implemented")
       get_tree().quit()
       
-      
+func condition_outcome(obj):
+  if condition_holds(obj["condition"]):
+    return obj.get("true")
+  else:
+    return obj.get("false")
 
 func question(text, options):
   check_pauses(label.get_text())
@@ -340,14 +323,9 @@ func question(text, options):
     var option_text
     if typeof(option) == TYPE_ARRAY: # simple [text, next] option
       option_text = option[0]
-    elif typeof(option) == TYPE_DICTIONARY:  
-      if condition_holds(option) and option.has("option_true"):
-        option_text = option["option_true"][0]
-      elif not condition_holds(option) and option.has("option_false"):
-        option_text = option["option_false"][0]
-      else:
-        print("ERROR: with filtered options there should be a valid option text.")
-        get_tree().quit()
+    elif typeof(option) == TYPE_DICTIONARY: # conditional option
+      var conditional_option = condition_outcome(option)
+      option_text = conditional_option[0]
     
     var choice = choice_scene.instance()
     
@@ -375,10 +353,10 @@ func filter_options(proto_options):
       real_options.append(protopt)
     elif typeof(protopt) == TYPE_DICTIONARY:
       var conditional = condition_holds(protopt["condition"])
-      if conditional and protopt.has("option_true"):
-        real_options.append(protopt["option_true"])
-      elif not conditional and protopt.has("option_false"):
-        real_options.append(protopt["option_false"])
+      if conditional and protopt.has("true"):
+        real_options.append(protopt["true"])
+      elif not conditional and protopt.has("false"):
+        real_options.append(protopt["false"])
     else:
       print("ERROR: option has unexpected type " + str(typeof(protopt)))
   return real_options

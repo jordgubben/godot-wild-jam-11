@@ -5,19 +5,18 @@
       ["Look under the rug.", "check_rug"],
       {
         "condition": "postcard_found",
-        "option_true": ["Put the postcard under the rug.", "put_postcard"]
+        "true": ["Put the postcard under the rug.", "put_postcard"]
       },
       ["Enter the stinky door.", "riches/bathroom", "first"],
       {
         "condition": "postcard_returned",
-        "option_true": ["Enter the fragrant door.", "riches/kitchen", "first"],
-        "option_false": ["Enter the fragrant door.", "rags/kitchen", "first"]
+        "true": ["Enter the fragrant door.", "riches/kitchen", "first"],
+        "false": ["Enter the fragrant door.", "rags/kitchen", "first"]
       }
     ]
   },
   "check_rug": {
-    "condition": "bool",
-    "variable": "key_found",
+    "condition": "key_found",
     "true": {
       "content": "There is nothing under the rug.",
       "next": "first"

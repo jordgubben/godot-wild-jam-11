@@ -4,15 +4,14 @@
     "options": [
       {
         "condition": "postcard_found",
-        "option_false": ["Look under the rug.", "check_rug"],
+        "false": ["Look under the rug.", "check_rug"],
       },
       ["Enter the stinky door.", "rags/bathroom", "first"],
       ["Enter the fragrant door.", "riches/kitchen", "first"]
     ]
   },
   "check_rug": {
-    "condition": "bool",
-    "variable": "postcard_found",
+    "condition": "postcard_found",
     "true": {
       "content": "There is nothing under the rug.",
       "next": "first"
