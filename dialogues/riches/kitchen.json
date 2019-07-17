@@ -1,6 +1,6 @@
 {
   "first": {
     "content": "RICHES: You are in the kitchen. Nothing to see here, you go back to the corridor.",
-    "next": ["riches/corridor", "first"]
+    "next": ["rags/corridor", "first"]
   }
 }

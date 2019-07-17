@@ -9,12 +9,11 @@ Repository: https://bitbucket.org/jsena42/godot-open-dialogue/
 
 extends Control
 
-onready var config = get_node("/root/CONFIG")
+signal GIFT_var_change
 
 ##### SETUP #####
 ## Paths ##
-var dialogues_folder = 'res://dialogues' # Folder where the JSON files will be stored
-var choice_scene = load('res://Choice.tscn') # Base scene for que choices
+var choice_scene = load('res://Choice.tscn') # Base scene for choices
 ## Required nodes ##
 onready var frame : Node = $Frame # The container node for the dialogues.
 onready var label : Node = $Frame/RichTextLabel # The label where the text will be displayed.
@@ -29,6 +28,7 @@ var pause_char : String = '|' # The character used in the JSON file to define wh
 var newline_char : String = '@' # The character used in the JSON file to break lines. If you change this you'll need to edit all your dialogue files.
 ## Other customization options ##
 onready var progress = PROGRESS # The AutoLoad script where the interaction log, quest variables, inventory and other useful data should be acessible.
+onready var config = CONFIG
 var blocks_seen = 'blocks_seen' # The dictionary on 'progress' used to keep track of interactions.
 var choice_plus_y : int = 2 # How much space (in pixels) should be added between the choices (affected by 'choice_height').
 var active_choice_color : Color = Color(1.0, 1.0, 1.0, 1.0)
@@ -104,7 +104,7 @@ func _ready():
 func transition(file_id, block_name = 'first'): # Load the whole dialogue into a variable
   id = file_id
   var file = File.new()
-  file.open('%s/%s.json' % [dialogues_folder, id], file.READ)
+  file.open('%s/%s.json' % [config.dialogues_folder, id], file.READ)
   var json = file.get_as_text()
   var parsed_json = JSON.parse(json)
   if len(parsed_json.get("error_string")) > 0:
@@ -129,13 +129,10 @@ func clean(): # Resets some variables to prevent errors.
 func not_question():
   is_question = false
 
-func set_variable(block):
-  progress.get("variables")[block["set_var"][0]] = block["set_var"][1]
-
 func update_dialogue(block):
   clean()
   if block.has("set_var"):
-      set_variable(block)
+      set_variables(block["set_var"])
   if not block.has("content") and not block.has("condition"): # No text to show, instant block.
     not_question()
     if typeof(block["next"]) == TYPE_ARRAY:
@@ -258,6 +255,8 @@ func clean_bbcode(string):
 
 
 func next():
+  if is_question:
+    evaluate_choice() # evaluate the current choice, setting variables
   clean() # Be sure all the variables used before are restored to their default values.
   if wait_time > 0: # Check if the typewriter effect is active.
     if label.visible_characters < number_characters: # Checks if the phrase is complete.
@@ -288,17 +287,21 @@ func change_image(img_name):
     var fade_animator = $"../../CenterContainer/Overlay/AnimationPlayer"
     fade_animator.play("fade_black")
 
-func condition_holds(condition):
-  if typeof(condition) == TYPE_STRING: # simple boolean condition for the default variables dictionary
-    return progress.get("variables").get(condition, false)
-  elif typeof(condition) == TYPE_ARRAY: # condition type depends on number of elements
-    if len(condition) == 2: # boolean check on variable in dictionary
-      var dictionary = condition[0]
-      var variable = condition[1]
-      return progress.get(dictionary).get(variable, false)
-    else:
-      print("ERROR: not implemented")
-      get_tree().quit()
+func condition_holds(condition, value_to_match = true):
+  if typeof(condition) == TYPE_STRING:
+    # var_name or dict_name<separator>var_name
+    var dict_and_var = condition.split(config.condition_separator)
+    if len(dict_and_var) == 1: # use default "variables" dictionary
+      return progress.get("variables").get(condition, false) == value_to_match
+    elif len(dict_and_var) == 2: # dictionary is specified
+      return progress.get(dict_and_var[0]).get(dict_and_var[1], false) == value_to_match
+  elif typeof(condition) == TYPE_DICTIONARY:
+    return condition_holds(condition["var_id"], condition["value"])
+  elif typeof(condition) == TYPE_ARRAY: # multiple conditions
+    for subcondition in condition:
+      if not condition_holds(subcondition):
+        return false
+    return true
       
 func condition_outcome(obj):
   if condition_holds(obj["condition"]):
@@ -384,9 +387,15 @@ func change_choice(dir):
           current_choice = current_choice + 1 if current_choice < number_choices else 0
           choices.get_child(current_choice).self_modulate = active_choice_color
 
-func update_variable(variables_array, current_dict):
-  for n in variables_array:
-    progress.get(current_dict)[n[0]] = n[1]
+func set_variables(assignment_arrays):
+  for assignment in assignment_arrays:
+    if len(assignment) == 2: # default variables array
+      progress.get("variables")[assignment[0]] = assignment[1]
+      emit_signal("GIFT_var_change", ["variables", assignment[0], assignment[1]])
+    else: # assignment = [dictionary, key, value]
+      progress.get(assignment[0])[assignment[1]] = assignment[2]
+      print("emitting signal var change!")
+      emit_signal("GIFT_var_change", assignment)
 
 func _input(event): # This function can be easily replaced. Just make sure you call the function using the right parameters.
   if event.is_action_pressed('%s' % previous_command):
@@ -394,8 +403,6 @@ func _input(event): # This function can be easily replaced. Just make sure you c
   if event.is_action_pressed('%s' % next_command):
     change_choice('next')
   if event.is_action_pressed('%s' % continue_dialogue):
-    if is_question:
-      evaluate_choice() # evaluate the current choice, setting variables
     next() # move the game forward
 
 func _on_Timer_timeout():

@@ -17,7 +17,7 @@
       "next": "first"
     },
     "false": {
-      "content": "There is a postcard under the rug. It's fanmail from some cult member.",
+      "content": "RAGS: There is a postcard under the rug. It's fanmail from some cult member.",
       "options": [
         ["Take it.", "take_postcard"],
         ["Leave it.", "first"]
@@ -27,7 +27,7 @@
     
   },
   "take_postcard": {
-    "set_var": ["postcard_found", true],
+    "set_var": [["postcard_found", true], ["inventory", "postcard", true]],
     "next": "first"
   }
 }

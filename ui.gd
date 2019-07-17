@@ -4,8 +4,9 @@ onready var config = get_node("/root/CONFIG")
 var current_img_name = ""
 
 func _ready():
+  var dialogue_node = $"./Sidebar/Dialogue"
   connect("dialogue_trigger", self, "change_image")
-
+  dialogue_node.connect("GIFT_var_change", self, "variable_changed")
 #func update_state(things):
 #  # Check if this step requires a new image
 #  var img_name = things
@@ -17,6 +18,12 @@ func change_image(img_name):
     current_img_name = img_name
     var fade_animator = $"./CenterContainer/Overlay/AnimationPlayer"
     fade_animator.play("fade_black")
+  
+func variable_changed(assignment):
+  if assignment[0] == "inventory":
+    # clear and repopulate the inventory to match inventory dictionary
+    var inventory = $"./Sidebar/Inventory"
+    inventory.match_dictionary()
   
 func _on_AnimationPlayer_animation_finished(anim_name):
   var fade_animator = $"../../CenterContainer/Overlay/AnimationPlayer"

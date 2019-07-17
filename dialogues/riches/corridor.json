@@ -4,7 +4,7 @@
     "options": [
       ["Look under the rug.", "check_rug"],
       {
-        "condition": "postcard_found",
+        "condition": ["postcard_found", "inventory:postcard"],
         "true": ["Put the postcard under the rug.", "put_postcard"]
       },
       ["Enter the stinky door.", "riches/bathroom", "first"],
@@ -18,7 +18,7 @@
   "check_rug": {
     "condition": "key_found",
     "true": {
-      "content": "There is nothing under the rug.",
+      "content": "RICHES: There is nothing under the rug.",
       "next": "first"
     },
     "false": {
@@ -30,12 +30,12 @@
     }    
   },
   "put_postcard": {
-    "content": "The moment you put the postcard under the rug you feel a short vibration from the door to the kitchen. Maybe just your imagination.",
-    "set_var": ["postcard_returned", true],
+    "content": "RICHES: The moment you put the postcard under the rug you feel a short vibration from the door to the kitchen. Maybe just your imagination.",
+    "set_var": [["postcard_returned", true], ["inventory", "postcard", false]],
     "next": "first"
   },
   "take_key": {
-    "set_var": ["key_found", true],
+    "set_var": [["key_found", true], ["inventory", "key", true]],
     "next": "first"
   }
 }

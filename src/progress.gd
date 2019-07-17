@@ -6,11 +6,15 @@ var blocks_seen = { # Everytime the player talks with an NPC it will store a con
 #	'question': true # This is here just for demonstration (and debugging) pourposes.
 }
 
-# Misc game state
+var inventory = {
+  # stuff the player has that is shown in the inventory panel.  
+}
+
+# Misc game state, this is the default dictionary
 var variables = {
   # What timeline the player is currenlty in
   'timeline': "rags" # Alt: 'rags', 'riches', 'ruins'
-  }
+}
 
 # Map of what passages between locations have open rifts
 # (Only keeps track of existance, not involved timelines)
