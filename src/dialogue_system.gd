@@ -12,7 +12,7 @@ extends Control
 signal GIFT_var_change
 
 ##### SETUP #####
-## Paths ##
+
 var choice_scene = load('res://Choice.tscn') # Base scene for choices
 ## Required nodes ##
 onready var frame : Node = $Frame # The container node for the dialogues.
@@ -20,14 +20,14 @@ onready var label : Node = $Frame/RichTextLabel # The label where the text will 
 onready var choices : Node = $Frame/Choices # The container node for the choices.
 onready var timer : Node = $Timer # Timer node.
 onready var continue_indicator : Node = $ContinueIndicator # Blinking square displayed when the text is all printed.
-onready var animations : Node = $AnimationPlayer
+onready var animations : Node = $AnimationPlayer # Animates blinking continue indicator
 ## Typewriter effect ##
 var wait_time : float = 0.02 # Time interval (in seconds) for the typewriter effect. Set to 0 to disable it. 
 var pause_time : float = 2.0 # Duration of each pause when the typewriter effect is active.
 var pause_char : String = '|' # The character used in the JSON file to define where pauses should be. If you change this you'll need to edit all your dialogue files.
 var newline_char : String = '@' # The character used in the JSON file to break lines. If you change this you'll need to edit all your dialogue files.
 ## Other customization options ##
-onready var progress = PROGRESS # The AutoLoad script where the interaction log, quest variables, inventory and other useful data should be acessible.
+onready var progress = PROGRESS # The AutoLoad script where the interaction log, quest variables, inventory and other useful data should be accessible.
 onready var config = CONFIG
 var blocks_seen = 'blocks_seen' # The dictionary on 'progress' used to keep track of interactions.
 var choice_plus_y : int = 2 # How much space (in pixels) should be added between the choices (affected by 'choice_height').
@@ -37,26 +37,19 @@ var choice_height : int = 20 # Choice label's height
 var choice_width : int = 250 # Choice label's width
 var choice_margin_vertical : int = 10 # Vertical space (in pixels) between the bottom border of the dialogue frame and the last question (affectd by the 'label_margin')
 var choice_margin_horizontal : int = 10 # Horizontal space (in pixels) between the border (set in 'choice_node_alignment') of the dialogue frame and the questions (affectd by the 'label_margin')
-var choice_text_alignment : String = 'left' # Alignment of the choice's text. Can be 'left' or 'right'
-var choice_node_alignment : String = 'left' # Alignment of the 'Choice' node. Can be 'left' or 'right'
 var previous_command : String = 'ui_up' # Input commmand for the navigating through question choices
 var next_command : String = 'ui_down' # Input commmand for the navigating through question choices
 var continue_dialogue : String = 'ui_continue'
 var frame_height : int = 325 # Dialog frame height (in pixels)
-var frame_width : int = 300 # Dialog frame width (in pixels)
-var frame_position : String = 'bottom' # Use to 'top' or 'bottom' to change the dialogue frame vertical alignment 
-var frame_margin : int = 25 # Vertical space (in pixels) between the dialogue box and the window border
+
 var label_margin : int = 20 # Space (in pixels) between the dialogue frame border and the text
 var enable_continue_indicator : bool = true # Enable or disable the 'continue_indicator' animation when the text is completely displayed. If typewritter effect is disabled it will always be visible on every dialogue block.
-var sprite_offset : Vector2 = Vector2(30, 0) # Used for polishing avatars' position. Can use negative values.
-var name_offset : Vector2 = Vector2(-10, -15) # Offsets the name labels relative to the frame borders.
-var show_names : bool = false # Turn on and off the character name labels
+
 # END OF SETUP #
 
-
 # Default values. Don't change them unless you really know what you're doing.
-var id
-var new_dialogue
+var current_dialogue_name
+var new_dialogue_name
 var next_block_name = ''
 var dialogue
 var current_img_name = ''
@@ -64,7 +57,6 @@ var phrase = ''
 var phrase_raw = ''
 var current_block = ''
 var number_characters : = 0
-var dictionary
 
 var is_question : = false
 var current_choice : = 0
@@ -74,218 +66,87 @@ var pause_index : = 0
 var paused : = false
 var pause_array : = []
 
-onready var sprite_timer : Node = $SpriteTimer
-onready var tween : Node = $Tween
-
-var white_opaque = Color(1.0, 1.0, 1.0, 1.0)
-var white_transparent = Color(1.0, 1.0, 1.0, 0.0)
-var black_opaque = Color(0.0, 0.0, 0.0, 1.0)
-var black_transparent = Color(0.0, 0.0, 0.0, 0.0)
-var light_gray_opaque = Color(0.75, 0.75, 0.75, 1.0)
-
-var mirrored_sprite = 'right'
-
-var shake_base = 20
-var move_distance = 100
-var ease_in_speed = 0.25
-var ease_out_speed = 0.50
-
-var previous_pos
-var sprite
-
-var on_tween = false
-
 func _ready():
-  set_physics_process(true)
+#warning-ignore:return_value_discarded
   timer.connect('timeout', self, '_on_Timer_timeout')
-  sprite_timer.connect('timeout', self, '_on_Sprite_Timer_timeout')
   frame.show()
+  clean_text_ui()
 
-func transition(file_id, block_name = 'first'): # Load the whole dialogue into a variable
-  id = file_id
-  var file = File.new()
-  file.open('%s/%s.json' % [config.dialogues_folder, id], file.READ)
-  var json = file.get_as_text()
-  var parsed_json = JSON.parse(json)
-  if len(parsed_json.get("error_string")) > 0:
-    print(parsed_json["error_string"])
-    print("Error on line " + str(parsed_json["error_line"]))
-  dialogue = parsed_json.result
-  var block = dialogue[block_name]
-  block.id = id + ":" + block_name
-  update_dialogue(block)
-  file.close()
+func go_to_block(file_id, block_name = 'first'):
+  new_dialogue_name = file_id
+  next_block_name = block_name
+  load_next_block()
+  while not current_block.has("content"):
+    go_to_next_block() # process "instant" blocks
+  update_text_ui()
 
-func clean(): # Resets some variables to prevent errors.
-  continue_indicator.hide()
-  animations.stop()
-  paused = false
-  pause_index = 0
-  pause_array = []
-  current_choice = 0
-  timer.wait_time = wait_time # Resets the typewriter effect delay
+func continue_to_next_content_block():
+  go_to_next_block()
+  while not current_block.has("content"):
+    go_to_next_block() # process "instant" blocks
+  update_text_ui()
 
+func go_to_next_block():
+  set_next_dialogue_and_block_ids()
+  load_next_block()
 
-func not_question():
-  is_question = false
-
-func update_dialogue(block):
-  clean()
-  if block.has("set_var"):
-      set_variables(block["set_var"])
-  if not block.has("content") and not block.has("condition"): # No text to show, instant block.
-    not_question()
-    if typeof(block["next"]) == TYPE_ARRAY:
-      new_dialogue = block["next"][0]
-      next_block_name = block["next"][1]
-    else: # single value, the name of the next block
-      next_block_name = block["next"]
-    next()
-    return
-  # Not an instant block, figure out which text to display.
-  var text_idx
-  if block.has('content_repeat'):
-    if progress.get(blocks_seen).has(block.id): # Checks if it's the first interaction with this block.
-      text_idx = "content_repeat" # It's not. Use the 'repeat' text.
-    else:
-      progress.get(blocks_seen)[block.id] = true # Updates the singleton containing the interactions log.
-      text_idx = "content" # It is. Use the 'content' text.
-  else:
-    text_idx = "content"
-    
-  current_block = block
-  number_characters = 0 # Resets the counter
-
-  # Check what kind of interaction the block is
-  # The following types exist:
-  # - Instant blocks, that modify the state and then go to the next block without user input.
-  # - Simple blocks, that only show text and let the user continue to the next block.
-  # - Choice blocks, with an "options" field that list the user's options.
-  # - Condition blocks, with a "condition" field and multiple fields that each contain a block
-  
-  if block.has("condition"):
-    not_question()
-    var outcome_block = condition_outcome(block)
-    if condition_holds(block["condition"]):
-      outcome_block.id = block.id + ":true"
-    else:
-      outcome_block.id = block.id + ":false"
-    update_dialogue(outcome_block)
-    return
-  elif block.has("options"):
-      label.bbcode_text = block[text_idx]
-      question(block[text_idx], block['options'])
-      check_newlines(phrase_raw)
-      clean_bbcode(block[text_idx])
-      number_characters = phrase_raw.length()
-  else:
-    not_question()
-    label.bbcode_text = block[text_idx]
-    check_pauses(label.get_text())
-    check_newlines(phrase_raw)
-    clean_bbcode(block[text_idx])
-    number_characters = phrase_raw.length()
-    
-    if typeof(block["next"]) == TYPE_ARRAY:
-      new_dialogue = block["next"][0]
-      next_block_name = block["next"][1]
-    else: # single value, the name of the next block
-      next_block_name = block["next"]
-  
-  if wait_time > 0: # Check if the typewriter effect is active and then starts the timer.
-    label.visible_characters = 0
-    timer.start()
-  elif enable_continue_indicator: # If typewriter effect is disabled check if the ContinueIndicator should be displayed
-    continue_indicator.show()
-    animations.play('Continue_Indicator')
-
-func check_pauses(string):
-  var next_search = 0
-  phrase_raw = string
-  next_search = phrase_raw.find('%s' % pause_char, next_search)
-  
-  if next_search >= 0:
-    while next_search != -1:
-      pause_array.append(next_search)
-      phrase_raw.erase(next_search, 1)
-      next_search = phrase_raw.find('%s' % pause_char, next_search)
-
-
-func check_newlines(string):
-  var line_search = 0
-  var line_break_array = []
-  var pause_array_backup = pause_array
-  var new_pause_array = []
-  var current_line = 0
-  phrase_raw = string
-  line_search = phrase_raw.find('%s' % newline_char, line_search)
-  
-  if line_search >= 0:
-    while line_search != -1:
-      line_break_array.append(line_search)
-      phrase_raw.erase(line_search,1)
-      line_search = phrase_raw.find('%s' % newline_char, line_search)
-  
-    for a in pause_array_backup.size():
-      if pause_array_backup[a] > line_break_array[current_line]:
-        current_line += 1
-      new_pause_array.append(pause_array_backup[a]-current_line)
-        
-    pause_array = new_pause_array
-
-func clean_bbcode(string):
-  phrase = string
-  var pause_search = 0
-  var line_search = 0
-  
-  pause_search = phrase.find('%s' % pause_char, pause_search)
-  
-  if pause_search >= 0:
-    while pause_search != -1:
-      phrase.erase(pause_search,1)
-      pause_search = phrase.find('%s' % pause_char, pause_search)
-  
-  phrase = phrase.split('%s' % newline_char, true, 0) # Splits the phrase using the newline_char as separator
-  
-  var counter = 0
-  label.bbcode_text = ''
-  for n in phrase:
-    label.bbcode_text = label.get('bbcode_text') + phrase[counter] + '\n'
-    counter += 1
-
-
-func next():
+func set_next_dialogue_and_block_ids():
+  # first set next_block_name and possibly new_dialogue_name
   if is_question:
-    evaluate_choice() # evaluate the current choice, setting variables
-  clean() # Be sure all the variables used before are restored to their default values.
-  if wait_time > 0: # Check if the typewriter effect is active.
-    if label.visible_characters < number_characters: # Checks if the phrase is complete.
-      label.visible_characters = number_characters # Finishes the phrase.
-      return # Stop the function here.
-  else: # The typewriter effect is disabled so we need to make sure the text is fully displayed.
-    label.visible_characters = -1 # -1 tells the RichTextLabel to show all the characters.
-  label.bbcode_text = ''
-  
-  if choices.get_child_count() > 0: # If has choices, remove them.
-    for n in choices.get_children():
-      choices.remove_child(n)
+    evaluate_choice() 
   else:
-    pass
-  if new_dialogue != null and new_dialogue != id: # Change to a new dialogue
-    transition(new_dialogue, next_block_name)
-  else:
-  # Continue to the next note
-    if not dialogue.has(next_block_name):
-      print("/!\\ Current dialogue does not contain the node '", next_block_name, "'")
-    var next_block = dialogue[next_block_name]
-    next_block.id = id + ":" + next_block_name
-    update_dialogue(next_block)
+    if typeof(current_block["next"]) == TYPE_ARRAY:
+      new_dialogue_name = current_block["next"][0]
+      next_block_name = current_block["next"][1]
+    else: # single value, the name of the next block
+      next_block_name = current_block["next"]
+      
+func evaluate_choice():
+  var options_available = filter_options(current_block['options'])
+  var opt_array = options_available[current_choice]
+  # Depending on the number of elements in the array, we may switch to a different dialogue
+  if len(opt_array) == 2: # Move to block within this dialogue
+    next_block_name = opt_array[1]
+  elif len(opt_array) == 3: # Switch dialogue
+    new_dialogue_name = opt_array[1]
+    next_block_name = opt_array[2]
+      
+# Some fields that a block may have and their effect:
+# - set_var:    Sets one or more variables before anything else happens
+# - condition:  Evaluate the condition and set current_block depending on outcome.
+# - content:    If absent we continue to the next block without waiting for player input.
+#               May be helpful as an in-between block for setting a variable
+#               if the actual next-block should not always set this variable.
+# - content_repeat: displayed if content is present and the block is visited for the Nth>1st time.
+# - options:    An array of 2- or 3-element arrays that define options from which
+#               the player must choose.
 
-func change_image(img_name):
-  if img_name != current_img_name:
-    current_img_name = img_name
-    var fade_animator = $"../../CenterContainer/Overlay/AnimationPlayer"
-    fade_animator.play("fade_black")
+func load_next_block():
+  if new_dialogue_name != null and new_dialogue_name != current_dialogue_name:
+    dialogue = load_dialogue(new_dialogue_name) # sets current_dialogue_name and dialogue
+  # Continue to the next block
+  current_block = dialogue[next_block_name]
+  current_block.id = current_dialogue_name + ":" + next_block_name
+  if current_block.has("set_var"):
+    set_variables(current_block["set_var"])  
+  while current_block.has("condition"): # drill down to a non-conditional block
+    var outcome_block = condition_outcome(current_block)
+    if condition_holds(current_block["condition"]):
+      outcome_block.id = current_block.id + ":true"
+    else:
+      outcome_block.id = current_block.id + ":false"
+    current_block = outcome_block
+    if current_block.has("set_var"):
+      set_variables(current_block["set_var"]) 
+  is_question = false
+  if current_block.has("options"):
+    is_question = true
+
+func condition_outcome(obj):
+  if condition_holds(obj["condition"]):
+    return obj.get("true")
+  else:
+    return obj.get("false")
 
 func condition_holds(condition, value_to_match = true):
   if typeof(condition) == TYPE_STRING:
@@ -302,52 +163,6 @@ func condition_holds(condition, value_to_match = true):
       if not condition_holds(subcondition):
         return false
     return true
-      
-func condition_outcome(obj):
-  if condition_holds(obj["condition"]):
-    return obj.get("true")
-  else:
-    return obj.get("false")
-
-func question(text, options):
-  check_pauses(label.get_text())
-  var n = 0 # Just a looping var.
-  var choice_node_align_x = 0
-  
-  if choice_node_alignment == 'right':
-    choice_node_align_x = frame_width - (choice_width + label_margin + choice_margin_horizontal)
-  else:
-    choice_node_align_x = label_margin + choice_margin_horizontal
-  
-  choices.rect_position = Vector2(choice_node_align_x,
-      frame_height - ((choice_height + choice_plus_y) * options.size() + label_margin + choice_margin_vertical))
-  
-  for option in filter_options(options):
-    var option_text
-    if typeof(option) == TYPE_ARRAY: # simple [text, next] option
-      option_text = option[0]
-    elif typeof(option) == TYPE_DICTIONARY: # conditional option
-      var conditional_option = condition_outcome(option)
-      option_text = conditional_option[0]
-    
-    var choice = choice_scene.instance()
-    
-    if choice_text_alignment == 'right':
-      choice.bbcode_text = '[right]' + option_text + '[/right]'
-    else:
-      choice.bbcode_text = option_text
-    choice.rect_size = Vector2(choice_width, choice_height)
-    choices.add_child(choice)
-    choices.get_child(n).rect_position.y = (choice_height + choice_plus_y) * n
-    if wait_time > 0:
-      choices.get_child(n).self_modulate = inactive_choice_color
-    else:
-      if n > 0:
-        choices.get_child(n).self_modulate = inactive_choice_color
-    n += 1
-  
-  is_question = true
-  number_choices = choices.get_child_count() - 1
 
 func filter_options(proto_options):
   var real_options = []
@@ -364,15 +179,146 @@ func filter_options(proto_options):
       print("ERROR: option has unexpected type " + str(typeof(protopt)))
   return real_options
 
-func evaluate_choice():
-  var options_available = filter_options(current_block['options'])
-  var opt_array = options_available[current_choice]
-  # Depending on the number of elements in the array, we may switch to a different dialogue
-  if len(opt_array) == 2: # Move to block within this dialogue
-    next_block_name = opt_array[1]
-  elif len(opt_array) == 3: # Switch dialogue
-    new_dialogue = opt_array[1]
-    next_block_name = opt_array[2]
+func load_dialogue(file_id):
+  # Load new dialogue
+  current_dialogue_name = file_id
+  var file = File.new()
+  file.open('%s/%s.json' % [config.dialogues_folder, current_dialogue_name], file.READ)
+  var json = file.get_as_text()
+  file.close()
+  var parsed_json = JSON.parse(json)
+  if len(parsed_json.get("error_string")) > 0:
+    print(parsed_json["error_string"])
+    print("Error on line " + str(parsed_json["error_line"]))
+  dialogue = parsed_json.result
+  return dialogue
+
+func set_variables(assignment_arrays):
+  for assignment in assignment_arrays:
+    if len(assignment) == 2: # default variables array
+      progress.get("variables")[assignment[0]] = assignment[1]
+      emit_signal("GIFT_var_change", ["variables", assignment[0], assignment[1]])
+    else: # assignment = [dictionary, key, value]
+      progress.get(assignment[0])[assignment[1]] = assignment[2]
+      emit_signal("GIFT_var_change", assignment)
+
+func update_text_ui():
+  clean_text_ui() # Be sure all the variables used before are restored to their default values.
+  var text_idx
+  if current_block.has('content_repeat'):
+    if progress.get(blocks_seen).has(current_block.id): # Checks if it's the first interaction with this block.
+      text_idx = "content_repeat" # It's not. Use the 'repeat' text.
+    else:
+      progress.get(blocks_seen)[current_block.id] = true # Updates the singleton containing the interactions log.
+      text_idx = "content" # It is. Use the 'content' text.
+  else:
+    text_idx = "content"
+  number_characters = 0 # Resets the count
+  label.bbcode_text = current_block[text_idx]
+  if current_block.has("options"):
+    question(filter_options(current_block['options']))
+  else:
+    check_pauses(label.get_text())
+  check_newlines(phrase_raw)
+  clean_bbcode(current_block[text_idx])
+  number_characters = phrase_raw.length()
+  if wait_time > 0: # Check if the typewriter effect is active and then starts the timer.
+    label.visible_characters = 0
+    timer.start()
+  elif enable_continue_indicator: # If typewriter effect is disabled check if the ContinueIndicator should be displayed
+    continue_indicator.show()
+    animations.play('Continue_Indicator')
+
+func question(options):
+  check_pauses(label.get_text())
+  var n = 0 # Just a looping var.
+  var choice_node_align_x = label_margin + choice_margin_horizontal  
+  choices.rect_position = Vector2(choice_node_align_x,
+      frame_height - ((choice_height + choice_plus_y) * options.size() + label_margin + choice_margin_vertical))
+  for option in options:
+    var option_text
+    if typeof(option) == TYPE_ARRAY: # simple [text, next] option
+      option_text = option[0]
+    elif typeof(option) == TYPE_DICTIONARY: # conditional option
+      var conditional_option = condition_outcome(option)
+      option_text = conditional_option[0]
+    var choice = choice_scene.instance()
+    choice.bbcode_text = option_text
+    choice.rect_size = Vector2(choice_width, choice_height)
+    choices.add_child(choice)
+    choices.get_child(n).rect_position.y = (choice_height + choice_plus_y) * n
+    if wait_time > 0:
+      choices.get_child(n).self_modulate = inactive_choice_color
+    else:
+      if n > 0:
+        choices.get_child(n).self_modulate = inactive_choice_color
+    n += 1
+  number_choices = choices.get_child_count() - 1
+
+func clean_text_ui(): # Resets some variables to prevent errors.
+  continue_indicator.hide()
+  animations.stop()
+  paused = false
+  pause_index = 0
+  pause_array = []
+  current_choice = 0
+  timer.wait_time = wait_time # Resets the typewriter effect delay
+
+func check_pauses(string):
+  var next_search = 0
+  phrase_raw = string
+  next_search = phrase_raw.find('%s' % pause_char, next_search)
+  if next_search >= 0:
+    while next_search != -1:
+      pause_array.append(next_search)
+      phrase_raw.erase(next_search, 1)
+      next_search = phrase_raw.find('%s' % pause_char, next_search)
+
+func check_newlines(string):
+  var line_search = 0
+  var line_break_array = []
+  var pause_array_backup = pause_array
+  var new_pause_array = []
+  var current_line = 0
+  phrase_raw = string
+  line_search = phrase_raw.find('%s' % newline_char, line_search)
+  if line_search >= 0:
+    while line_search != -1:
+      line_break_array.append(line_search)
+      phrase_raw.erase(line_search,1)
+      line_search = phrase_raw.find('%s' % newline_char, line_search)
+    for a in pause_array_backup.size():
+      if pause_array_backup[a] > line_break_array[current_line]:
+        current_line += 1
+      new_pause_array.append(pause_array_backup[a]-current_line)
+    pause_array = new_pause_array
+
+func clean_bbcode(string):
+  phrase = string
+  var pause_search = 0
+  pause_search = phrase.find('%s' % pause_char, pause_search)
+  if pause_search >= 0:
+    while pause_search != -1:
+      phrase.erase(pause_search,1)
+      pause_search = phrase.find('%s' % pause_char, pause_search)
+  # Splits the phrase using the newline_char as separator
+  phrase = phrase.split('%s' % newline_char, true, 0)
+  var counter = 0
+  label.bbcode_text = ''
+  for n in phrase:
+    label.bbcode_text = label.get('bbcode_text') + phrase[counter] + '\n'
+    counter += 1
+
+func update_pause():
+  if pause_array.size() > (pause_index+1): # Check if the current pause is not the last one. 
+    pause_index += 1
+  else: # Doesn't have any pauses left.
+    pause_array = []
+    pause_index = 0
+    
+  paused = false
+  timer.wait_time = wait_time
+  timer.start()
 
 func change_choice(dir):
   if is_question:
@@ -387,15 +333,17 @@ func change_choice(dir):
           current_choice = current_choice + 1 if current_choice < number_choices else 0
           choices.get_child(current_choice).self_modulate = active_choice_color
 
-func set_variables(assignment_arrays):
-  for assignment in assignment_arrays:
-    if len(assignment) == 2: # default variables array
-      progress.get("variables")[assignment[0]] = assignment[1]
-      emit_signal("GIFT_var_change", ["variables", assignment[0], assignment[1]])
-    else: # assignment = [dictionary, key, value]
-      progress.get(assignment[0])[assignment[1]] = assignment[2]
-      print("emitting signal var change!")
-      emit_signal("GIFT_var_change", assignment)
+func maybe_complete_text_animation():
+  if wait_time > 0: # Check if the typewriter effect is active.
+    if label.visible_characters < number_characters: # Checks if the phrase is complete.
+      label.visible_characters = number_characters # Finishes the phrase.
+      return true
+  label.visible_characters = -1 # -1 tells the RichTextLabel to show all the characters.
+  label.bbcode_text = ''
+  if choices.get_child_count() > 0: # If has choices, remove them.
+    for n in choices.get_children():
+      choices.remove_child(n)
+  return false  
 
 func _input(event): # This function can be easily replaced. Just make sure you call the function using the right parameters.
   if event.is_action_pressed('%s' % previous_command):
@@ -403,14 +351,15 @@ func _input(event): # This function can be easily replaced. Just make sure you c
   if event.is_action_pressed('%s' % next_command):
     change_choice('next')
   if event.is_action_pressed('%s' % continue_dialogue):
-    next() # move the game forward
+    if maybe_complete_text_animation():
+      return # this "continue" is only used to show all text
+    continue_to_next_content_block()
 
 func _on_Timer_timeout():
   if label.visible_characters < number_characters: # Check if the timer needs to be started
     if paused:
       update_pause()
       return # If in pause, ignore the rest of the function.
-
     if pause_array.size() > 0: # Check if the phrase have any pauses left.
       if label.visible_characters == pause_array[pause_index]: # pause_char == index of the last character before pause.
         timer.wait_time = pause_time * wait_time * 10
@@ -419,7 +368,6 @@ func _on_Timer_timeout():
         label.visible_characters += 1
     else: # Phrase doesn't have any pauses.
       label.visible_characters += 1
-    
     timer.start()
   else:
     if is_question:
@@ -429,14 +377,3 @@ func _on_Timer_timeout():
       continue_indicator.show()
     timer.stop()
     return
-
-func update_pause():
-  if pause_array.size() > (pause_index+1): # Check if the current pause is not the last one. 
-    pause_index += 1
-  else: # Doesn't have any pauses left.
-    pause_array = []
-    pause_index = 0
-    
-  paused = false
-  timer.wait_time = wait_time
-  timer.start()

@@ -7,11 +7,6 @@ func _ready():
   var dialogue_node = $"./Sidebar/Dialogue"
   connect("dialogue_trigger", self, "change_image")
   dialogue_node.connect("GIFT_var_change", self, "variable_changed")
-#func update_state(things):
-#  # Check if this step requires a new image
-#  var img_name = things
-#  if img_name != null:
-#    change_image(img_name)
 
 func change_image(img_name):
   if img_name != current_img_name:

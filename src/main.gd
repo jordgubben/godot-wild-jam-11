@@ -7,7 +7,7 @@ var timeline = "rags"
 
 func _ready():
   location_graph = create_location_graph("./src/location_graph.json")
-  $"./UI/Sidebar/Dialogue".transition(timeline + "/" + starting_location)
+  $"./UI/Sidebar/Dialogue".go_to_block(timeline + "/" + starting_location)
   
 
 func create_location_graph(filename):  
