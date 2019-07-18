@@ -1,0 +1,11 @@
+{
+  "": {
+    "corridor": ["bathroom", "kitchen"]
+  },
+  "bathroom": {
+    "connections": ["corridor"]
+  },
+  "kitchen": {
+    "connections": ["corridor"]
+  },
+}

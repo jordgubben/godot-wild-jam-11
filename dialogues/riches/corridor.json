@@ -1,0 +1,41 @@
+{
+  "first": {
+    "content": "RICHES: You are in a dark corridor with an embroidered purple rug and two doors. One smells good, one smells bad.",
+    "options": [
+      ["Look under the rug.", "check_rug"],
+      {
+        "condition": ["postcard_found", "inventory:postcard"],
+        "true": ["Put the postcard under the rug.", "put_postcard"]
+      },
+      ["Enter the stinky door.", "riches/bathroom", "first"],
+      {
+        "condition": "postcard_returned",
+        "true": ["Enter the fragrant door.", "riches/kitchen", "first"],
+        "false": ["Enter the fragrant door.", "rags/kitchen", "first"]
+      }
+    ]
+  },
+  "check_rug": {
+    "condition": "key_found",
+    "true": {
+      "content": "RICHES: There is nothing under the rug.",
+      "next": "first"
+    },
+    "false": {
+      "content": "There is a key under the rug.",
+      "options": [
+        ["Take it.", "take_key"],
+        ["Leave it.", "first"]
+      ]
+    }    
+  },
+  "put_postcard": {
+    "content": "RICHES: The moment you put the postcard under the rug you feel a short vibration from the door to the kitchen. Maybe just your imagination.",
+    "set_var": [["postcard_returned", true], ["inventory", "postcard", false]],
+    "next": "first"
+  },
+  "take_key": {
+    "set_var": [["key_found", true], ["inventory", "key", true]],
+    "next": "first"
+  }
+}

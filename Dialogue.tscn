@@ -1,10 +1,11 @@
 [gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://dialogue_system.gd" type="Script" id=1]
+[ext_resource path="res://src/dialogue_system.gd" type="Script" id=1]
 [ext_resource path="res://fonts/adobe_source_san_pro_ttf/godot_font_format/source_sans_pro_bold_italic_16.tres" type="DynamicFont" id=2]
 [ext_resource path="res://fonts/adobe_source_san_pro_ttf/godot_font_format/source_sans_pro_italic_16.tres" type="DynamicFont" id=3]
 [ext_resource path="res://fonts/adobe_source_san_pro_ttf/godot_font_format/source_sans_pro_bold_16.tres" type="DynamicFont" id=4]
 [ext_resource path="res://fonts/adobe_source_san_pro_ttf/godot_font_format/source_sans_pro_regular_16.tres" type="DynamicFont" id=5]
+
 
 [sub_resource type="Animation" id=1]
 loop = true

@@ -1,0 +1,15 @@
+{
+  "first": {
+    "content": "You are in a dark corridor with an embroidered crimson rug and two doors. One smells good, one smells bad.",
+    "repeat": "Back in the corridor with two smelly doors.",
+    "options": [
+      ["Look under the rug.", "check_rug"]
+      ["Enter the stinky door.", "bathroom:first"],
+      ["Enter the fragrant door.", "kitchen:first"]
+    ]
+  },
+  "check_rug": {
+    "content": "There is nothing under the rug.",
+    "next": "first"
+  }
+}
