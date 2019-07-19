@@ -342,7 +342,6 @@ pause_mode = 1
 anims/black_0.3 = SubResource( 2 )
 anims/fade_black = SubResource( 3 )
 anims/fade_light = SubResource( 4 )
-
 [connection signal="animation_finished" from="UI/CenterContainer/Overlay/AnimationPlayer" to="UI" method="_on_AnimationPlayer_animation_finished"]
 
 [editable path="UI/Sidebar/Inventory"]
