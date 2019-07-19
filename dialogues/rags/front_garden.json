@@ -1,0 +1,6 @@
+{
+	"first": {
+		"content": "Your walking along the trail between the house and the pier.",
+		"next": "first"
+	}
+}

@@ -1,0 +1,14 @@
+{
+  "first": {
+    "content": "It’s a clear summer day in the archipelago.|Standing at the bow, looking out towards the horizon, a slight breeze ruffles your hair.",
+    "next": "almost_there"
+  },
+  "almost_there": {
+    "content": "The boat aproaches a small island with a single one story building on it.@This is it, you're old fammily summer home.",
+    "next": "drop_off"
+  },
+  "drop_off": {
+    "content": "The boats owner drop you of at a narrow pier. They ask if you need a ride home to and at what time, but you politely decline. You’ve hitch-hiked on boats before; it should be fine.",
+    "next": ["rags/pier", "first"]
+  }
+}
