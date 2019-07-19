@@ -12,8 +12,10 @@ var inventory = {
 
 # Misc game state, this is the default dictionary
 var variables = {
+  'frontdoor_locked': true,
+
   # What timeline the player is currenlty in
-  'timeline': "rags" # Alt: 'rags', 'riches', 'ruins'
+  'timeline': "rags" # Alt: 'rags', 'riches', 'ruins',
 }
 
 # Map of what passages between locations have open rifts
