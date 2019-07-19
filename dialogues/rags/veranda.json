@@ -2,11 +2,10 @@
   "first": {
     "content": "You step onto the veranda. The front porch is empty, except for the couch covered by a plastic pressing. All windows are boarded up.",
     "options": [
-      {
-        "condition": "frontdoor_locked",
-        "true": ["Check padlock on door.", "padlock"],
-        "false": ["Walk into halway.", "hall", "first"]
-      }
+      ["Check padlock on door.", "padlock"],
+      ["Text Gran", "text_gran"],
+      ["Enter house", "enter_house"],
+      ["Go back towards pier", "rags/front_garden", "first"]
     ]
   },
   "padlock": {
@@ -14,19 +13,57 @@
     "true": {
       "content": "The doors locked with a hevy duty padlock.",
       "options": [
-        ["Text Gran", "text_gran_about_lock"],
-        ["Do nothing", "first"],
-      ],
+        {
+          "condition": ["note_in_other_jacket", "has_front_door_code"],
+          "false": ["Check note with code", "check_note_with_code"]
+        },
+        {
+          "condition": "has_front_door_code",
+          "true": ["Unlock it", "unlock_padlock"]
+        },
+        ["Leave padlock alone", "first"]
+      ]
     },
     "false": {
       "content": "It's an on a hinge. It's unlocked and the door is slightly ajar.",
       "next": "first"
     }
   },
-  "text_gran_about_lock": {
-    "content": "You text your granma about the lock, but no response. Almoste as if this section of the game was incomplete or somthing.",
+  "check_note_with_code": {
+    "content": "You take out the note with the padlock code. | ... |@Ah, cuss! |@It’s the other jacket, isn’t it? @Not your day, is seems.",
+    "set_var": [["note_in_other_jacket", true]],
+    "next": "padlock"
+  },
+  "unlock_padlock": {
+    "content": "You faff about with the padlock knobs for a while untill you hear a distinct click.",
+    "set_var": [["frontdoor_locked", false]],
+    "next": "first"
+  },
+  "enter_house": {
+    "condition": "frontdoor_locked",
+    "true": {
+      "content": "Nope rope. The door is padlock on the door refuses your request.",
+      "next": "first"
+    },
+    "false": {
+      "content": "You open the door and enter the house.",
+      "next": ["hall", "first"]
+    }
+  },
+
+  "text_gran": {
+    "content": "You take up your trusty old feature phone of some previously world dominating, but now mostly obscure, finish brand.",
+
+    "options": [{
+        "condition": "note_in_other_jacket",
+        "true": ["Ask her about the padlock code", "ask_gran_about_padlock_code"]
+      },
+      ["Nevermind, don't text anything", "first"]
+    ]
+  },
+  "ask_gran_about_padlock_code": {
+    "content": "You text your granny about the padlock. She reponds with the code.|The conversation is a bit dry, like if someone hadn't had time to write it properly yet.",
+    "set_var": [["has_front_door_code", true]],
     "next": "first"
   }
-
-
 }
