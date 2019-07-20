@@ -10,6 +10,7 @@ Repository: https://bitbucket.org/jsena42/godot-open-dialogue/
 extends Control
 
 signal GIFT_var_change
+signal GIFT_dialogue_trigger(img_name)
 
 ##### SETUP #####
 
@@ -228,6 +229,8 @@ func update_text_ui():
   elif enable_continue_indicator: # If typewriter effect is disabled check if the ContinueIndicator should be displayed
     continue_indicator.show()
     animations.play('Continue_Indicator')
+  print("signaling UI to update image!")
+  emit_signal("GIFT_dialogue_trigger", current_block)
 
 func question(options):
   check_pauses(label.get_text())
