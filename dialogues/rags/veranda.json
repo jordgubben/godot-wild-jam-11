@@ -1,0 +1,69 @@
+{
+  "first": {
+    "content": "You step onto the veranda. The front porch is empty, except for the couch covered by a plastic pressing. All windows are boarded up.",
+    "options": [
+      ["Check padlock on door.", "padlock"],
+      ["Text Gran", "text_gran"],
+      ["Enter house", "enter_house"],
+      ["Go back towards pier", "rags/front_garden", "first"]
+    ]
+  },
+  "padlock": {
+    "condition": "frontdoor_locked",
+    "true": {
+      "content": "The door is locked with a hevy duty padlock.",
+      "options": [
+        {
+          "condition": ["note_in_other_jacket", "has_front_door_code"],
+          "false": ["Check note with code", "check_note_with_code"]
+        },
+        {
+          "condition": "has_front_door_code",
+          "true": ["Unlock it", "unlock_padlock"]
+        },
+        ["Leave padlock alone", "first"]
+      ]
+    },
+    "false": {
+      "content": "It's on a hinge. It's unlocked and the door is slightly ajar.",
+      "next": "first"
+    }
+  },
+  "check_note_with_code": {
+    "content": "You take out the note with the padlock code. | ... |@Ah, cuss! |@It’s the other jacket, isn’t it? @Not your day, is seems.",
+    "set_var": [["note_in_other_jacket", true]],
+    "next": "padlock"
+  },
+  "unlock_padlock": {
+    "content": "You faff about with the padlock knobs for a while until you hear a distinct click.",
+    "set_var": [["frontdoor_locked", false]],
+    "next": "first"
+  },
+  "enter_house": {
+    "condition": "frontdoor_locked",
+    "true": {
+      "content": "Nope rope. The padlock on the door keeps the door shut.",
+      "next": "first"
+    },
+    "false": {
+      "content": "You open the door and enter the house.",
+      "next": ["hall", "first"]
+    }
+  },
+
+  "text_gran": {
+    "content": "You take up your trusty old feature phone of some previously world dominating, but now mostly obscure, Finnish brand.",
+
+    "options": [{
+        "condition": "note_in_other_jacket",
+        "true": ["Ask her about the padlock code", "ask_gran_about_padlock_code"]
+      },
+      ["Nevermind, don't text anything", "first"]
+    ]
+  },
+  "ask_gran_about_padlock_code": {
+    "content": "You text your granny about the padlock. She responds with the code.|The conversation is a bit dry, like the author hadn't had time to write it properly yet.",
+    "set_var": [["has_front_door_code", true]],
+    "next": "first"
+  }
+}
