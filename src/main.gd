@@ -1,13 +1,14 @@
 extends Control
 
-export(String) var starting_location = "corridor"
+export(String) var starting_location = "boat"
+export(String) var starting_timeline = "rags"
 
 var location_graph = {}
-var timeline = "rags"
+
 
 func _ready():
   location_graph = create_location_graph("./src/location_graph.json")
-  $"./UI/Sidebar/Dialogue".go_to_block(timeline + "/" + starting_location)
+  $"./UI/Sidebar/Dialogue".go_to_block(starting_timeline + "/" + starting_location)
   
 
 func create_location_graph(filename):  
