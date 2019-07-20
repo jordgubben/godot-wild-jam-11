@@ -3,7 +3,7 @@
     "content": "The old dining room is very different from how you remember it. There used to be a large wooden table with chairs in the center of the room, enough for ten people to eat together. But in its place and along the walls are now glass cases displaying various items, with old photos of your grandparents and the house.",
     "content_repeat": "You are in the old, now unfamiliar dining room. In the center of the room and along the walls are glass cases displaying various items. A sliding door in the south wall leads to the front of the house and on the north wall is an entrance into what used to be the kitchen.",
     "options": [
-        ["Go through the sliding doors into the study.", "maybe_rift"],
+        ["Go back into the study.", "maybe_rift"],
         ["Enter the kitchen.", "riches/kitchen", "first"],
         ["Inspect the display case in the center of the room.", "center_case"],
         ["Inspect the display cases along the walls.", ["wall_cases"]]
