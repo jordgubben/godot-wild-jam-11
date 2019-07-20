@@ -93,14 +93,15 @@ func go_to_next_block():
 func set_next_dialogue_and_block_ids():
   # first set next_block_name and possibly new_dialogue_name
   if is_question:
-    evaluate_choice() 
+    evaluate_choice()
   else:
     if typeof(current_block["next"]) == TYPE_ARRAY:
       new_dialogue_name = current_block["next"][0]
       next_block_name = current_block["next"][1]
     else: # single value, the name of the next block
       next_block_name = current_block["next"]
-      
+
+# Set new block name and possibly new dialogue name.
 func evaluate_choice():
   var options_available = filter_options(current_block['options'])
   var opt_array = options_available[current_choice]

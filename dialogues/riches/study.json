@@ -1,0 +1,9 @@
+{
+  "first": {
+    "content": "RICHES: This is the study.",
+    "options": [
+        ["Go into the entrance hall.", "riches/hall", "first"],
+        ["Enter through the sliding door.", "riches/dining_room", "first"]
+    ]
+  }
+}

@@ -5,7 +5,7 @@
     "options": [
         ["Go through the dark wooden door opposite the front door.", "door_locked"],
         ["Go through the door with the matte glass opposite the window.", "rags/study", "first"],
-        ["Go outside.", "rags/veranda"],
+        ["Go outside.", "rags/veranda", "first"],
     ]
   },
   "door_locked": {
