@@ -30,7 +30,7 @@ var newline_char : String = '@' # The character used in the JSON file to break l
 onready var progress = PROGRESS # The AutoLoad script where the interaction log, quest variables, inventory and other useful data should be accessible.
 onready var config = CONFIG
 var blocks_seen = 'blocks_seen' # The dictionary on 'progress' used to keep track of interactions.
-var choice_plus_y : int = 2 # How much space (in pixels) should be added between the choices (affected by 'choice_height').
+var choice_plus_y : int = 4 # How much space (in pixels) should be added between the choices (affected by 'choice_height').
 var active_choice_color : Color = Color(1.0, 1.0, 1.0, 1.0)
 var inactive_choice_color : Color = Color(1.0, 1.0, 1.0, 0.4)
 var choice_height : int = 20 # Choice label's height
@@ -235,6 +235,7 @@ func question(options):
   var choice_node_align_x = label_margin + choice_margin_horizontal  
   choices.rect_position = Vector2(choice_node_align_x,
       frame_height - ((choice_height + choice_plus_y) * options.size() + label_margin + choice_margin_vertical))
+  var total_choices_height = 0
   for option in options:
     var option_text
     if typeof(option) == TYPE_ARRAY: # simple [text, next] option
@@ -243,10 +244,11 @@ func question(options):
       var conditional_option = condition_outcome(option)
       option_text = conditional_option[0]
     var choice = choice_scene.instance()
-    choice.bbcode_text = option_text
-    choice.rect_size = Vector2(choice_width, choice_height)
+    choice.set_text(option_text)
+#    choice.rect_size = Vector2(choice_width, choice_height)
     choices.add_child(choice)
-    choices.get_child(n).rect_position.y = (choice_height + choice_plus_y) * n
+    choices.get_child(n).rect_position.y = total_choices_height
+    total_choices_height += (choice.get_line_height() + choice.get_constant("line_spacing")) * choice.get_line_count() + choice_plus_y
     if wait_time > 0:
       choices.get_child(n).self_modulate = inactive_choice_color
     else:

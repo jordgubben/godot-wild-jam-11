@@ -1,6 +1,6 @@
 extends Control
 
-export(String) var starting_location = "corridor"
+export(String) var starting_location = "hall"
 
 var location_graph = {}
 var timeline = "rags"
