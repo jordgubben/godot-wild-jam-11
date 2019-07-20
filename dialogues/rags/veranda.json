@@ -1,5 +1,6 @@
 {
   "first": {
+    "image": "Veranda__map",
     "content": "You step onto the veranda. The front porch is empty, except for the couch covered by a plastic pressing. All windows are boarded up.",
     "options": [
       ["Check padlock on door.", "padlock"],
