@@ -1,7 +1,7 @@
 {
   "first": {
-    "content": "You enter the parlour in the front of the house. The first thing you notice is a tree branch sticking through the window on the right. There is glass on the carpet. In the center of the room is a coffee table with two arm chairs around it, and across the room is a large bookcase against the wall.&&A sliding door on the left leads into what used to be the dining room.",
-    "content_repeat": "You are in the parlour in the front of the house. A large tree branch has smashed through the window and there is glass on the carpet. In the center of the room is a coffee table with two arm chairs around it, and on the east wall is a large bookcase.&&A sliding door on the north wall leads into what used to be the dining room.",
+    "content": "You enter the parlour in the front of the house. The first thing you notice is a tree branch sticking through the window on the right. There is glass on the carpet. In the center of the room is a coffee table with two arm chairs around it, and across the room is a large bookcase against the wall.@@A sliding door on the left leads into what used to be the dining room.",
+    "content_repeat": "You are in the parlour in the front of the house. A large tree branch has smashed through the window and there is glass on the carpet. In the center of the room is a coffee table with two arm chairs around it, and on the east wall is a large bookcase.@@A sliding door on the north wall leads into what used to be the dining room.",
     "options": [
         ["Go into the entrance hall.", "rags/hall", "first"],
         ["Enter through the sliding door.", "riches/dining_room", "first"]
