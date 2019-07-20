@@ -1,6 +1,6 @@
 {
   "first": {
-    "content": "Your walking along the trail between the house and the pier.",
+    "content": "You're walking along the trail between the house and the pier.",
     "options": [
       ["Walk to the house", "rags/veranda", "first"],
       ["Walk to the pier", "rags/pier", "first"],

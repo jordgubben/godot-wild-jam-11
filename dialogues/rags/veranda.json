@@ -11,7 +11,7 @@
   "padlock": {
     "condition": "frontdoor_locked",
     "true": {
-      "content": "The doors locked with a hevy duty padlock.",
+      "content": "The door is locked with a hevy duty padlock.",
       "options": [
         {
           "condition": ["note_in_other_jacket", "has_front_door_code"],
@@ -25,7 +25,7 @@
       ]
     },
     "false": {
-      "content": "It's an on a hinge. It's unlocked and the door is slightly ajar.",
+      "content": "It's on a hinge. It's unlocked and the door is slightly ajar.",
       "next": "first"
     }
   },
@@ -35,14 +35,14 @@
     "next": "padlock"
   },
   "unlock_padlock": {
-    "content": "You faff about with the padlock knobs for a while untill you hear a distinct click.",
+    "content": "You faff about with the padlock knobs for a while until you hear a distinct click.",
     "set_var": [["frontdoor_locked", false]],
     "next": "first"
   },
   "enter_house": {
     "condition": "frontdoor_locked",
     "true": {
-      "content": "Nope rope. The door is padlock on the door refuses your request.",
+      "content": "Nope rope. The padlock on the door keeps the door shut.",
       "next": "first"
     },
     "false": {
@@ -52,7 +52,7 @@
   },
 
   "text_gran": {
-    "content": "You take up your trusty old feature phone of some previously world dominating, but now mostly obscure, finish brand.",
+    "content": "You take up your trusty old feature phone of some previously world dominating, but now mostly obscure, Finnish brand.",
 
     "options": [{
         "condition": "note_in_other_jacket",
@@ -62,7 +62,7 @@
     ]
   },
   "ask_gran_about_padlock_code": {
-    "content": "You text your granny about the padlock. She reponds with the code.|The conversation is a bit dry, like if someone hadn't had time to write it properly yet.",
+    "content": "You text your granny about the padlock. She responds with the code.|The conversation is a bit dry, like the author hadn't had time to write it properly yet.",
     "set_var": [["has_front_door_code", true]],
     "next": "first"
   }

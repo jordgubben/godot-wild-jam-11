@@ -4,11 +4,11 @@
     "next": "almost_there"
   },
   "almost_there": {
-    "content": "The boat aproaches a small island with a single one story building on it.@This is it, you're old fammily summer home.",
+    "content": "The boat approaches a small island with a single one story building on it.@This is it, your old family summer home.",
     "next": "drop_off"
   },
   "drop_off": {
-    "content": "The boats owner drop you of at a narrow pier. They ask if you need a ride home to and at what time, but you politely decline. You’ve hitch-hiked on boats before; it should be fine.",
+    "content": "The boat's owner drops you off at a narrow pier. They ask if you need a ride home too, and at what time, but you politely decline. You’ve hitch-hiked on boats before; getting home should be fine.",
     "next": ["rags/pier", "first"]
   }
 }

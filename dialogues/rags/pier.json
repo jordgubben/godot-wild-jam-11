@@ -4,25 +4,25 @@
     "options": [
       ["Take a closer look at the house", "look_at_house"],
       ["Walk towards the house", "rags/front_garden", "first"],
-      ["Wait a bit.", "wait"]
+      ["Wait a bit", "wait"]
     ]
   }, 
   "look_at_house": {
-    "content": "The house seems to have been doing fine all these years. Nothing has changed since your fammily used to live here in the summers. It's a bit rugged, but in in good shape giving the circumstances.",
+    "content": "The house seems to have been doing fine all these years. Nothing has changed since your family used to live here in the summers. It's a bit rugged, but in good shape giving the circumstances.",
     "next": "nostalgia"
   },
   "nostalgia": {
-   "content": "Your thoughs are about to wander of to those old times..|@@ But a more pressent matter grabs your attention.",
+   "content": "Your thoughts are about to wander off to those old times..|@@ But a more present matter grabs your attention.",
     "next": "branch"
   },
   "branch": {
-    "content": "The large tree just to the right of the house has fallen over. || Hard to tell from here, but one of the larger branches could have smashed right through the porch windows leading into the study. ||@Tree trunk must have snapped during the spring storms.|@@Grans gonna be so pissed.",
+    "content": "The large tree just to the right of the house has fallen over. || Hard to tell from here, but one of the larger branches could have smashed right through the porch window leading into the study. ||@The tree trunk must have snapped during the spring storms.|@@Gran's gonna be so pissed.",
     "options": [
       ["Walk towards the house", "rags/front_garden", "first"],
     ]
   },
   "wait":{
-    "content": "Just chillin. No rush.",
+    "content": "Just chillin'. No rush.",
     "next": "first"
   }
 
