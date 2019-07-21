@@ -18,7 +18,6 @@ var variables = {
   # Rifts
   "study=>dining_room": true,
 
-
   # What timeline the player is currenlty in
   'timeline': "rags" # Alt: 'rags', 'riches', 'ruins',
 }

@@ -1,5 +1,6 @@
 {
   "first": {
+    "image": "Pier__map",
     "content": "You're standing on the pier looking up across the front garden towards the house.",
     "options": [
       ["Take a closer look at the house", "look_at_house"],
