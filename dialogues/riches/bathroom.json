@@ -1,6 +1,0 @@
-{
-  "first": {
-    "content": "RICHES: You are in the bathroom. It's smelly here, so you go back into the corridor.",
-    "next": ["riches/corridor", "first"]
-  }
-}
