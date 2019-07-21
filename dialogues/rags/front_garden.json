@@ -1,5 +1,6 @@
 {
   "first": {
+    "image": "FrontGarden__map",
     "content": "You're walking along the trail between the house and the pier.",
     "options": [
       ["Walk to the house", "rags/veranda", "first"],
