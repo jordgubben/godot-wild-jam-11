@@ -10,7 +10,7 @@
     ]
   },
   "door_locked": {
-    "content": "The door won't budge, it appears to be locked. You remember that behind it was the bedroom, where you sometimes slept on a mattress on the floor.",
+    "content": "The door won't budge, it appears to be locked.",
     "content_repeat": "The door is still locked",
     "next": "first"
   }
