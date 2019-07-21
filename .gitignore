@@ -13,6 +13,7 @@ _archive/
 img/locations/*.import
 
 # Misc. tmp files
+build/
 *~
 
 # OS stuff
