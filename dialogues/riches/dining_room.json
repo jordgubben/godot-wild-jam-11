@@ -6,7 +6,7 @@
         ["Go back into the study.", "maybe_rift"],
         ["Enter the kitchen.", "riches/kitchen", "first"],
         ["Inspect the display case in the center of the room.", "center_case"],
-        ["Inspect the display cases along the walls.", ["wall_cases"]]
+        ["Inspect the display cases along the walls.", "wall_cases"]
     ]
   },
   "center_case": {

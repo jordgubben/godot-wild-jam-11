@@ -131,11 +131,20 @@ func load_next_block():
   if current_block.has("set_var"):
     set_variables(current_block["set_var"])  
   while current_block.has("condition"): # drill down to a non-conditional block
-    var outcome_block = condition_outcome(current_block)
-    if condition_holds(current_block["condition"]):
-      outcome_block.id = current_block.id + ":true"
-    else:
-      outcome_block.id = current_block.id + ":false"
+    var condition_outcome = condition_outcome(current_block)
+    var outcome_block
+    if typeof(condition_outcome) == TYPE_STRING:
+      outcome_block = dialogue[condition_outcome]
+    elif typeof(condition_outcome) == TYPE_ARRAY and len(condition_outcome) == 2:
+      # [dialogue_id, block_name]
+      dialogue = load_dialogue(condition_outcome[0])
+      outcome_block = dialogue[condition_outcome[1]]
+    elif typeof(condition_outcome) == TYPE_DICTIONARY:
+      outcome_block = condition_outcome
+      if condition_holds(current_block["condition"]):
+        outcome_block.id = current_block.id + ":true"
+      else:
+        outcome_block.id = current_block.id + ":false"
     current_block = outcome_block
     if current_block.has("set_var"):
       set_variables(current_block["set_var"]) 
