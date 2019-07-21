@@ -12,6 +12,8 @@ _archive/
 # Godot open dialogue
 img/locations/*.import
 
+# Misc. tmp files
+*~
 
 # OS stuff
 .DS_Store
