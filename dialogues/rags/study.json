@@ -1,5 +1,6 @@
 {
   "first": {
+    "image": "Study__map",
     "content": "You are in the study. It a quadratic room housing several book shelves, where one has a fold out desk build in.",
     "options": [
       ["Remember days past", "remember"],
