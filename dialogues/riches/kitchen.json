@@ -3,8 +3,8 @@
     "image": "Kitchen__map",
     "content": "A large, shiny stove dominates the kitchen, with two industrial-quality sinks and kitchen counter next to it. Either your grandmother really invested in the kitchen in recent years or something else is going on.@@Opposite the stove is a door to the west, leading into the garden.",
     "options": [["Check the drawers under the counter.", "check_counter"],
-                ["Go outside.", "door_locked"],
-                ["Go into the old dining room.", "riches/dining_room", "first"],
+                ["Go outside", "door_locked"],
+                ["Go to the dining room", "riches/dining_room", "first"],
             ]
   },
   "door_locked": {
