@@ -1,6 +1,25 @@
 {
   "first": {
-    "content": "RAGS: You are in the kitchen.",
-    "next": ["rags/corridor", "first"]
+    "content": "You enter the kitchen again and immediately notice that it looks much more austere, as you remembered it. There is a small electric stove next to the aluminum counter with a small sink.@@Opposite the stove is a door to the west, leading into the garden.",
+    "content_repeat": "You are in the kitchen, with an old electric stove next to the kitchen counter. Opposite the stove is a door to the west, leading into the garden. To the south is the entrance to the dining room.",
+    "options": [["Check the drawers under the counter.", "check_counter"],
+                ["Go outside.", "go_to_garden"],
+                ["Go into the dining room.", "rags/dining_room", "first"],
+            ]
+  },
+  "check_counter": {
+    "content": "There is only cutlery in the drawers.",
+    "next": "first"
+  },
+  "go_to_garden": {
+    "condition": "garden_unlatched",
+    "true": {
+        "next": ["rags/garden", "first"]
+    },
+    "false": {
+        "content": "The door is latched from the inside. You open the latch and walk outside.",
+        "set_var": [["garden_unlatched", true]],
+        "next": ["rags/garden", "first"]
+    }
   }
 }

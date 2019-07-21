@@ -1,0 +1,20 @@
+{
+  "first": {
+    "content": "You are in the study. It a quadratic room housing several book shelves, where one has a fold out desk build in.",
+    "options": [
+      ["Remember days past", "remember"],
+      ["Return to the hall.", "riches/hall", "first"],
+      ["Go to the dining room.", "to_dining_room"]
+    ]
+  },
+  "remember": {
+    "content":"There are several mattresses tucked away behind the bookshelves and a bag containing a disassembled tent is under the fold-out desk.||@@Having that many people living in such a small house all summer meant using every space possible, but also that you got closer,. whether you liked it or not.",
+    "next": "first"
+  },
+
+  "to_dining_room": {
+    "condition": "study=>dining_room",
+    "true": {"next": ["riches/dining_room", "first"]},
+    "false": {"next": ["rags/dining_room", "first"]}
+  }
+}

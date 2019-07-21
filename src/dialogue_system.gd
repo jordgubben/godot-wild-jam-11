@@ -93,14 +93,15 @@ func go_to_next_block():
 func set_next_dialogue_and_block_ids():
   # first set next_block_name and possibly new_dialogue_name
   if is_question:
-    evaluate_choice() 
+    evaluate_choice()
   else:
     if typeof(current_block["next"]) == TYPE_ARRAY:
       new_dialogue_name = current_block["next"][0]
       next_block_name = current_block["next"][1]
     else: # single value, the name of the next block
       next_block_name = current_block["next"]
-      
+
+# Set new block name and possibly new dialogue name.
 func evaluate_choice():
   var options_available = filter_options(current_block['options'])
   var opt_array = options_available[current_choice]
@@ -130,11 +131,20 @@ func load_next_block():
   if current_block.has("set_var"):
     set_variables(current_block["set_var"])  
   while current_block.has("condition"): # drill down to a non-conditional block
-    var outcome_block = condition_outcome(current_block)
-    if condition_holds(current_block["condition"]):
-      outcome_block.id = current_block.id + ":true"
-    else:
-      outcome_block.id = current_block.id + ":false"
+    var condition_outcome = condition_outcome(current_block)
+    var outcome_block
+    if typeof(condition_outcome) == TYPE_STRING:
+      outcome_block = dialogue[condition_outcome]
+    elif typeof(condition_outcome) == TYPE_ARRAY and len(condition_outcome) == 2:
+      # [dialogue_id, block_name]
+      dialogue = load_dialogue(condition_outcome[0])
+      outcome_block = dialogue[condition_outcome[1]]
+    elif typeof(condition_outcome) == TYPE_DICTIONARY:
+      outcome_block = condition_outcome
+      if condition_holds(current_block["condition"]):
+        outcome_block.id = current_block.id + ":true"
+      else:
+        outcome_block.id = current_block.id + ":false"
     current_block = outcome_block
     if current_block.has("set_var"):
       set_variables(current_block["set_var"]) 

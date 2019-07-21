@@ -12,7 +12,12 @@ var inventory = {
 
 # Misc game state, this is the default dictionary
 var variables = {
+  # Locks
   'frontdoor_locked': true,
+
+  # Rifts
+  "study=>dining_room": true,
+
 
   # What timeline the player is currenlty in
   'timeline': "rags" # Alt: 'rags', 'riches', 'ruins',

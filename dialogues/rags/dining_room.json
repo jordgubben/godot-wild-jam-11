@@ -1,0 +1,29 @@
+{
+  "first": {
+    "content": "You cannot believe your eyes as you walk back into the old dining room. Where previously there were display cabinets standing around - you were sure of this! - the room now looks as you remembered it: a long wooden table with ten chairs stands in the center of the room.",
+    "content_repeat": "You are in the old dining room. In the center of the room is a long wooden table with ten chairs around it. A sliding door in the south wall leads to the front of the house. A wooden door in the west wall should lead into the old bedroom. On the north wall is the entrance to the kitchen.",
+    "options": [
+      ["Go through the south door.", "rags/study", "first"],
+      ["Enter the kitchen.", "rags/kitchen", "first"],
+      ["Go through the west door.", "try_bedroom_key"]
+    ]
+  },
+  "try_bedroom_door": {
+    "condition": "bedroom_unlocked_rags",
+    "false": {
+      "condition": "inventory:bedroom_key",
+      "true": {
+        "content": "You use the bedroom key to unlock the door and enter through it.",
+        "set_var": [["bedroom_unlocked_rags", true], ["inventory", "bedroom_key", false]],
+        "next": ["rags/bedroom", "first"]
+      },
+      "false": {
+        "content": "The door appears to be locked.",
+        "next": "first"
+      }
+    },
+    "true": {
+      "next": ["rags/bedroom", "first"]
+    }
+  }
+}

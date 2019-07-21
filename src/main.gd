@@ -1,10 +1,9 @@
 extends Control
 
-export(String) var starting_location = "boat"
 export(String) var starting_timeline = "rags"
+export(String) var starting_location = "boat"
 
 var location_graph = {}
-
 
 func _ready():
   location_graph = create_location_graph("./src/location_graph.json")
