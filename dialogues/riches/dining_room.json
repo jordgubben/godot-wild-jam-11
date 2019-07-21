@@ -3,7 +3,7 @@
     "content": "The old dining room is very different from how you remember it. There used to be a large wooden table with chairs in the center of the room, enough for ten people to eat together. But in its place and along the walls are now glass cases displaying various items, with old photos of your grandparents and the house.",
     "content_repeat": "You are in the old, now unfamiliar dining room. In the center of the room and along the walls are glass cases displaying various items. A sliding door in the south wall leads to the front of the house and on the north wall is an entrance into what used to be the kitchen.",
     "options": [
-        ["Go back into the study.", "maybe_rift"],
+        ["Go back into the study.", "to_study"],
         ["Enter the kitchen.", "riches/kitchen", "first"],
         ["Inspect the display case in the center of the room.", "center_case"],
         ["Inspect the display cases along the walls.", "wall_cases"]
@@ -17,12 +17,15 @@
     "content": "The display cases along the wall feature mostly old newspapers reporting the miraculous survival of a man who got struck by ball lightning. There are some panels speculating on the nature of the phenomenon, hinting at its spiritual or divine origin.",
     "next": "first"
   },
-  "maybe_rift": {
-    "condition": "found_airplane",
-    "true": {
-        "set_var": [["closed_riches_hall_rags_study", true]],    
-        "next": "rags/study"
-    },
-    "false": "riches/study"
+
+  "to_study": {
+    "condition": ["found_airplane", "study=>dining_room"],
+    "true": {"next": "close_rift_from_study"},
+    "false": {"next": ["rags/study", "first"]}
+  },
+  "close_rift_from_study": {
+    "content": "As you walk throug the door to the study you are suddely engulfed in a strong white light. You can feel the toy pulsate in your hand.",
+    "set_var": [["study=>dining_room", false]],    
+    "next": ["rags/study", "first"]
   }
 }
